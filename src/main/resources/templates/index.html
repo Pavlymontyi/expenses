@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+
+    <form action="#" th:action="@{/expenses/add}" th:object="${expense}" method="post">
+        <p>Описание: <input type="text" th:field="*{description}" placeholder="Описание"/> </p>
+        <p>Сумма:  <input type="text" th:field="*{amount}" placeholder="Сумма"/></p>
+        <p>Категория:  <input type="text" name="categoryId" placeholder="Категория"/></p>
+<!--        <p>Дата:  <input type="date" th:field="*{expenseDate}" th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}" /></p>-->
+        <p><input type="submit" value="Submit" /></p>
+
+
+<!--        <table>-->
+<!--            <tr>-->
+<!--                &lt;!&ndash;                    <td><label th:text="#{msg.name}" /></td>&ndash;&gt;-->
+<!--                <td></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                &lt;!&ndash;                    <td><label th:text="#{msg.amount}" /></td>&ndash;&gt;-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td></td>-->
+<!--            </tr>-->
+<!--        </table>-->
+    </form>
+
+    <table border="1">
+        <tbody>
+        <tr th:each="expense: ${expenses}">
+            <td th:text="${expense.id}" />
+            <td th:text="${expense.description}" />
+            <td th:text="${expense.amount}" />
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
