@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <caption>Вклады</caption>
+    <tr valign="top" align="center">
+        <td th:each="card: ${cards}"
+            th:colspan="${card.deposits.size()}"
+            align="center"
+            th:text="${card.getShortInfo()+'. ' +card.getTotalInfo()}"/>
+    </tr>
+
+<!--    <tr valign="top" align="center" th:each="dep: ${clients[0].cards[0].deposits}">-->
+<!--        <th  th:text="${dep.startDate}"/>-->
+<!--    </tr>-->
+
+<!--    <tr th:each="dep: ${client.cards[0].deposits}">-->
+<!--&lt;!&ndash;        <td th:text="${dep.name}"/>&ndash;&gt;-->
+<!--        <td>pakr</td>-->
+<!--    </tr>-->
+
+    <tr>
+        <th align="center" th:each="deposit: ${deposits}" th:text="${deposit.getInfo()}"/>
+    </tr>
+    <tr valign="top" >
+        <td th:each="deposit: ${deposits}">
+            <table cellspacing="5">
+                <tr>
+                    <td>Дата</td>
+                    <td>Сумма</td>
+                    <td>Проценты</td>
+                    <td>Итог</td>
+                </tr>
+                <tr th:each="income: ${deposit.incomes}">
+                    <td th:text="${income.date}"/>
+                    <td th:text="${income.value}"/>
+                    <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
+                    <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
+                </tr>
+                <tr valign="bottom">
+                    <td><b>Итог</b></td>
+                    <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
+                    <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
+                    <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
+                </tr>
+            </table>
+        </td>
+
+    </tr>
+
+</table>
+
+
+</body>
+</html>

@@ -17,4 +17,14 @@ public class GreetingController {
         model.addAttribute("name", name);
         return "greeting";
     }
+
+    @GetMapping("/m")
+    public String greeting() {
+        return "main111";
+    }
+
+    @GetMapping("/main")
+    public String greeting2() {
+        return "deposits_mockup";
+    }
 }
