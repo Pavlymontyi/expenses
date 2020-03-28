@@ -10,13 +10,13 @@ public class Income {
     int value;
     String date;
     Deposit deposit;
-    Client owner;
+    Person owner;
 
     public Income(int value, String incomeDate, Deposit deposit) {
         this(value, incomeDate, deposit, deposit.getMoneyOwner());
     }
 
-    public Income(int value, String incomeDate, Deposit deposit, Client owner) {
+    public Income(int value, String incomeDate, Deposit deposit, Person owner) {
         this.value = value;
         this.date = incomeDate;
         this.deposit = deposit;

@@ -1,7 +1,7 @@
 package com.kraynov.expenses.controller;
 
 import com.kraynov.expenses.domain.dep.card.CardImpl;
-import com.kraynov.expenses.domain.dep.Client;
+import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.domain.dep.Deposit;
 import com.kraynov.expenses.domain.dep.Income;
 import com.kraynov.expenses.service.DepositService;
@@ -22,10 +22,10 @@ public class DepositConroller {
 
     @GetMapping
     public String index(Map<String, Object> model) {
-        Client pasha = new Client("Паша");
-        Client lenka = new Client("Лена");
-        Client kolya = new Client("Коля");
-        Client mama = new Client("Мама");
+        Person pasha = new Person("Паша");
+        Person lenka = new Person("Лена");
+        Person kolya = new Person("Коля");
+        Person mama = new Person("Мама");
 
         CardImpl pashaCardImpl = new CardImpl(pasha, "Совкомбанк", "29.12.2018");
         pasha.addCard(pashaCardImpl);
@@ -42,11 +42,11 @@ public class DepositConroller {
         first.addIncome(new Income(100000, "27.02.2020", first, mama));
         pashaCardImpl.addDeposit(first);
 
-        Deposit second = new Deposit(pashaCardImpl, "27.02.2020", 6.6);
+        Deposit second = new Deposit(pashaCardImpl, "27.02.2020", 6.6, pasha);
         second.addIncome(new Income(500000, "27.02.2020", second));
         pashaCardImpl.addDeposit(second);
 
-        Deposit third = new Deposit(lenaCardImpl, "22.03.2019", 8.8);
+        Deposit third = new Deposit(lenaCardImpl, "22.03.2019", 8.8, lenka);
         third.addIncome(new Income(700000, "22.03.2019", third));
         lenaCardImpl.addDeposit(third);
 

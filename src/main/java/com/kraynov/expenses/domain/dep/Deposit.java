@@ -10,7 +10,7 @@ import java.util.List;
 public class Deposit {
 
     CardImpl card;
-    Client moneyOwner;
+    Person moneyOwner;
     double percent;
     String startDate;
     List<Income> incomes = new ArrayList<>();
@@ -21,7 +21,7 @@ public class Deposit {
         this.percent = percent;
     }
 
-    public Deposit(CardImpl card, String startDate, double percent, Client moneyOwner) {
+    public Deposit(CardImpl card, String startDate, double percent, Person moneyOwner) {
         this(card, startDate, percent);
         this.moneyOwner = moneyOwner;
     }

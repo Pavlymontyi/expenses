@@ -1,6 +1,6 @@
 package com.kraynov.expenses.domain.dep.card;
 
-import com.kraynov.expenses.domain.dep.Client;
+import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.domain.dep.Deposit;
 import com.kraynov.expenses.service.DepositService;
 
@@ -30,7 +30,7 @@ public class CardView implements Card {
     }
 
     @Override
-    public Client getOwner() {
+    public Person getOwner() {
         return card.getOwner();
     }
 

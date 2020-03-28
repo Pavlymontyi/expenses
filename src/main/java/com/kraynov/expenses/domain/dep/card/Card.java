@@ -1,13 +1,13 @@
 package com.kraynov.expenses.domain.dep.card;
 
-import com.kraynov.expenses.domain.dep.Client;
+import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.domain.dep.Deposit;
 
 import java.util.List;
 
 public interface Card {
 
-    Client getOwner();
+    Person getOwner();
     String getBank();
     String getOpenDate();
     List<Deposit> getDeposits();

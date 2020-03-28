@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Client {
+public class Person {
 
     private String name;
     private List<CardImpl> cards;
 
-    public Client(String name) {
+    public Person(String name) {
         this.name = name;
         cards = new ArrayList<>();
     }

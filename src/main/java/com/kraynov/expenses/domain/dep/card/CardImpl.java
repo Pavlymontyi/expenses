@@ -1,6 +1,6 @@
 package com.kraynov.expenses.domain.dep.card;
 
-import com.kraynov.expenses.domain.dep.Client;
+import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.domain.dep.Deposit;
 
 import java.util.ArrayList;
@@ -8,12 +8,13 @@ import java.util.List;
 
 public class CardImpl implements Card {
 
-    private Client owner;
+    private Person owner;
     private String bank;
     private String openDate;
+    private int group;
     private List<Deposit> deposits = new ArrayList<>();
 
-    public CardImpl(Client owner, String bankName, String openDate) {
+    public CardImpl(Person owner, String bankName, String openDate) {
         this.owner = owner;
         this.bank = bankName;
         this.openDate = openDate;
@@ -24,7 +25,7 @@ public class CardImpl implements Card {
         deposits.add(deposit);
     }
 
-    public Client getOwner() {
+    public Person getOwner() {
         return owner;
     }
 
