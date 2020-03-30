@@ -1,14 +1,20 @@
 package com.kraynov.expenses.domain;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
-@Data
+@Table(name="expenses")
+@Setter
+@Getter
+@ToString
 public class Expense {
 
     @Id
@@ -30,5 +36,22 @@ public class Expense {
 
     public Expense(double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Expense expense = (Expense) o;
+        return Double.compare(expense.amount, amount) == 0 &&
+                Objects.equals(id, expense.id) &&
+                Objects.equals(description, expense.description) &&
+                Objects.equals(expenseDate, expense.expenseDate) &&
+                Objects.equals(category, expense.category);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, description, amount, expenseDate, category);
     }
 }

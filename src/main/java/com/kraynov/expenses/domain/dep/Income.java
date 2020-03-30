@@ -1,56 +1,70 @@
 package com.kraynov.expenses.domain.dep;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.*;
 import java.util.Objects;
 
-@Data
+@Entity
+@Table(name="incomes")
+@Setter
+@Getter
+@ToString
 public class Income {
 
-    int value;
-    String date;
-    Deposit deposit;
-    Person owner;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    public Income(int value, String incomeDate, Deposit deposit) {
-        this(value, incomeDate, deposit, deposit.getMoneyOwner());
+    private int value;
+    private String date;
+    @ManyToOne @JoinColumn(name = "deposit_id")
+    private Deposit deposit;
+    @ManyToOne @JoinColumn(name = "person_id")
+    private Person owner;
+
+    public Income() {
     }
 
-    public Income(int value, String incomeDate, Deposit deposit, Person owner) {
-        this.value = value;
-        this.date = incomeDate;
-        this.deposit = deposit;
-        this.owner = owner;
-    }
-
-    //todo: добавить учет даты
-    public double getRevenue() {
-        return deposit.percent/100 * this.value;
-    }
-
-    //todo: добавить учет даты
-    public String getRevenueClarification() {
-
-        return value+"*"+(deposit.percent/100)+"*"+"365"+"/"+"365";
-    }
-
-    public double calculateTotal() {
-        return value+getRevenue();
-    }
-
+    //
+//    public Income(int value, String incomeDate, Deposit deposit) {
+//        this(value, incomeDate, deposit, deposit.getMoneyOwner());
+//    }
+//
+//    public Income(int value, String incomeDate, Deposit deposit, Person owner) {
+//        this.value = value;
+//        this.date = incomeDate;
+//        this.deposit = deposit;
+//        this.owner = owner;
+//    }
+//
+//    //todo: добавить учет даты
+//    public double getRevenue() {
+//        return deposit.percent/100 * this.value;
+//    }
+//
+//    //todo: добавить учет даты
+//    public String getRevenueClarification() {
+//
+//        return value+"*"+(deposit.percent/100)+"*"+"365"+"/"+"365";
+//    }
+//
+//    public double calculateTotal() {
+//        return value+getRevenue();
+//    }
+//
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Income income = (Income) o;
-        return value == income.value &&
-                date.equals(income.date) &&
-                deposit.equals(income.deposit) &&
-                owner.equals(income.owner);
+        return id.equals(income.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, date, deposit, owner);
+        return Objects.hash(id);
     }
 }

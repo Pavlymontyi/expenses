@@ -1,23 +1,23 @@
 package com.kraynov.expenses.controller;
 
-import com.kraynov.expenses.dao.ExpenseRepo;
 import com.kraynov.expenses.domain.Expense;
 import com.kraynov.expenses.service.ExpenseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/expenses")
 public class ExpenseController {
 
-    @Autowired
-    private ExpenseService expenseService;
+    private final ExpenseService expenseService;
+
+    public ExpenseController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
+    }
 
 //    @GetMapping
 //    @ResponseBody
@@ -27,12 +27,13 @@ public class ExpenseController {
 //    }
 
     @GetMapping
-    public String index(Map<String, Object> model) {
-        model.put("expenses", expenseService.getAll());
+    public String expensesScreen(Map<String, Object> model) {
+        model.put("expenses", expenseService.getAllExpenses());
+        model.put("categories", expenseService.getAllCategories());
         Expense expense = new Expense(0);
         //expense.setExpenseDate(new Date());
         model.put("expense", expense);
-        return "index";
+        return "expenses";
     }
 
     @PostMapping("/add")
@@ -41,7 +42,7 @@ public class ExpenseController {
                              BindingResult bindingResult) {
         System.out.println(categoryId);
         if (!bindingResult.hasErrors()) {
-            expenseService.save(expense);
+            expenseService.saveExpense(expense);
         } else {
             System.out.println("Incorrected data: "+bindingResult.getAllErrors());
         }

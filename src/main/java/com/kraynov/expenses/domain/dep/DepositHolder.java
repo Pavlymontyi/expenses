@@ -1,6 +1,5 @@
 package com.kraynov.expenses.domain.dep;
 
-import com.kraynov.expenses.domain.dep.card.Card;
 import lombok.Data;
 
 import java.util.List;
