@@ -17,8 +17,8 @@
                         <div th:text="${person.name}"/>
                         <div th:text="${person.cards[0].deposits.size()}"/>
                         <a th:href="@{/card/add(personId=${person.id})}">Открыть карту</a>
-                        <table class="cardTable" bgcolor="#faebd7">
-                            <tr>
+                        <table class="cardTable" bgcolor="#faebd7" >
+                            <tr valign="top">
                                 <td th:each="card: ${person.cards}">
                                     <p th:text="${card.bank}"/>
                                     <p th:text="${card.openDate}"/>

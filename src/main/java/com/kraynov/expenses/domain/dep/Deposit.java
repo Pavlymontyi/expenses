@@ -7,7 +7,6 @@ import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -18,7 +17,8 @@ import java.util.Set;
 public class Deposit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
+    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
     private Long id;
 
     @ManyToOne
@@ -29,7 +29,7 @@ public class Deposit {
     private int duration;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "deposit")
     @SortComparator(IncomeComparator.class)
-    private Set<Income> incomes = new HashSet<>();
+    private Set<Income> incomes;
 
     public static class IncomeComparator implements Comparator<Income> {
 
@@ -43,8 +43,14 @@ public class Deposit {
     public Deposit() {
     }
 
+    public Deposit(Card card, double percent, String startDate, int duration) {
+        this.card = card;
+        this.percent = percent;
+        this.startDate = startDate;
+        this.duration = duration;
+    }
 
-//
+    //
 //    public Deposit(Card card, String startDate, double percent) {
 //        this.card = card;
 //        this.startDate = startDate;

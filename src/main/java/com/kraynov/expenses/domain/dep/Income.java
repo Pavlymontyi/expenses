@@ -15,7 +15,8 @@ import java.util.Objects;
 public class Income {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
+    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
     private Long id;
 
     private int value;
@@ -26,6 +27,13 @@ public class Income {
     private Person owner;
 
     public Income() {
+    }
+
+    public Income(int value, String date, Deposit deposit, Person owner) {
+        this.value = value;
+        this.date = date;
+        this.deposit = deposit;
+        this.owner = owner;
     }
 
     //

@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
+import static com.kraynov.expenses.controller.MainController.INDEX_URL_REDIRECTION;
+
 @Controller
 @RequestMapping("/card")
 public class CardController {
-    private static final String INDEX_URL_REDIRECTION = "redirect:/deposits";
+
 
     private final DepositService service;
 
@@ -22,8 +24,6 @@ public class CardController {
 
     @GetMapping("/add")
     public String addCardScreen(@RequestParam Long personId, Map<String, Object> model) {
-        System.out.println("pakr work id=" + personId);
-        System.out.println("pakr work model=" + model);
         model.put("person", service.getPersonById(personId));
         return "/card/addCard.html";
     }
