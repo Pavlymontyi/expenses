@@ -1,9 +1,12 @@
 package com.kraynov.expenses.controller;
 
 import com.kraynov.expenses.domain.dep.Card;
+import com.kraynov.expenses.domain.dep.Deposit;
 import com.kraynov.expenses.errorhandling.BusinessException;
+import com.kraynov.expenses.service.CardService;
 import com.kraynov.expenses.service.DepositService;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,28 +23,82 @@ public class DepositController {
     private static final String DEPOSIT_DURATION_PARAM_NAME = "duration";
     private static final String DEPOSIT_INIT_AMOUNT_PARAM_NAME = "amount";
 
-    private final DepositService service;
+    private static final String DEPOSIT_ID_AMOUNT_PARAM_NAME = "depositId";
+    private static final String DEPOSIT_REFILL_AMOUNT_PARAM_NAME = "refillAmount";
+    private static final String DEPOSIT_REFILL_DATE_PARAM_NAME = "refillDate";
+    private static final String DEPOSIT_CARD_PARAM_NAME = "cardSelector";
 
-    public DepositController(DepositService service) {
-        this.service = service;
+    private static final String DEPOSIT_PERCENT_AMOUNT_PARAM_NAME = "percentAmount";
+
+
+    private final DepositService depositService;
+    private final CardService cardService;
+
+    public DepositController(DepositService depositService, CardService cardService) {
+        this.depositService = depositService;
+        this.cardService = cardService;
     }
 
     @GetMapping("/open")
-    public String getOpenDepositScreen(@RequestParam Long cardId, Map<String, Object> model) {
-        model.put("card", service.getCardById(cardId));
-        return "/deposit/addDeposit.html";
+    public String getOpenDepositScreen(@RequestParam Long cardId, Map<String, Object> model) throws BusinessException {
+        model.put("card", cardService.getCardById(cardId));
+        return "/deposit/add.html";
     }
 
     @PostMapping("/open")
     public String openNewDeposit(@RequestParam Map<String, String> params) throws BusinessException {
         System.out.println("asdasdas = "+params);
-        Card card = service.getCardById(Long.valueOf(params.get(CARD_ID_PARAM_NAME)));
+        Card card = cardService.getCardById(Long.valueOf(params.get(CARD_ID_PARAM_NAME)));
         double percent = Double.valueOf(params.get(DEPOSIT_PERCENT_PARAM_NAME));
         String openDate = params.get(DEPOSIT_OPEN_DATE_PARAM_NAME);
         int duration = Integer.valueOf(params.get(DEPOSIT_DURATION_PARAM_NAME));
         int initialAmount = Integer.valueOf(params.get(DEPOSIT_INIT_AMOUNT_PARAM_NAME));
 
-        service.openNewDeposit(card, percent, openDate, duration, initialAmount);
+        depositService.openNewDeposit(card, percent, openDate, duration, initialAmount);
+        return MainController.INDEX_URL_REDIRECTION;
+    }
+
+    @GetMapping("/refill")
+    public String getRefillDepositScreen(@RequestParam Long depositId, Map<String, Object> model) throws BusinessException {
+        Deposit deposit = depositService.getDepositById(depositId);
+        model.put("deposit", deposit);
+        model.put("depositTotal", depositService.calculateTotal(deposit));
+        model.put("cards", cardService.getAllCards());
+        return "/deposit/addMoney.html";
+    }
+
+    @PostMapping("/refill")
+    public String refillDeposit(@RequestParam Map<String, String> params) throws BusinessException {
+        Deposit deposit = depositService.getDepositById(Long.valueOf(params.get(DEPOSIT_ID_AMOUNT_PARAM_NAME)));
+        int refillAmount = Integer.valueOf(params.get(DEPOSIT_REFILL_AMOUNT_PARAM_NAME));
+        String refillDate = params.get(DEPOSIT_REFILL_DATE_PARAM_NAME);
+        String cardIdParam = params.get(DEPOSIT_CARD_PARAM_NAME);
+        Card card = StringUtils.isEmpty(cardIdParam) ? deposit.getCard() : cardService.getCardById(Long.valueOf(cardIdParam));
+
+        depositService.refillDeposit(deposit, card, refillDate, refillAmount);
+        return MainController.INDEX_URL_REDIRECTION;
+    }
+
+    @GetMapping("/close")
+    public String getCloseDepositScreen(@RequestParam Long depositId, Map<String, Object> model) throws BusinessException {
+        Deposit deposit = depositService.getDepositById(depositId);
+        model.put("deposit", deposit);
+        //todo: добавить таблицу долгов? до того допускаем что если деньги на закрываемом вкладе принадлежат разным людям, то вручную эту ситуацию разруливаем
+        return "/deposit/close";
+    }
+
+    @PostMapping("/close")
+    public String closeDeposit(@RequestParam Map<String, String> params) throws BusinessException {
+        Deposit deposit = depositService.getDepositById(Long.valueOf(params.get(DEPOSIT_ID_AMOUNT_PARAM_NAME)));
+        Integer amount = Integer.valueOf(params.get(DEPOSIT_PERCENT_AMOUNT_PARAM_NAME));
+        depositService.closeDeposit(deposit, amount);
+        return MainController.INDEX_URL_REDIRECTION;
+    }
+
+    @GetMapping("/delete")
+    public String getCloseDepositScreen(@RequestParam Long depositId) throws BusinessException {
+        Deposit deposit = depositService.getDepositById(depositId);
+        depositService.delete(deposit);
         return MainController.INDEX_URL_REDIRECTION;
     }
 }

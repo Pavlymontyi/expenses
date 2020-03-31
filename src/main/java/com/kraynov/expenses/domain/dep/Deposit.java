@@ -24,6 +24,7 @@ public class Deposit {
     @ManyToOne
     @JoinColumn(name = "card_id")
     private Card card;
+    private Boolean active;
     private double percent;
     private String startDate;
     private int duration;
@@ -48,6 +49,7 @@ public class Deposit {
         this.percent = percent;
         this.startDate = startDate;
         this.duration = duration;
+        this.active = true;
     }
 
     //

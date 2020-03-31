@@ -24,17 +24,21 @@
                                     <p th:text="${card.openDate}"/>
                                     <p th:text="${card.balance}"/>
 
-                                    <a th:href="@{/card/addMoney(cardId=${card.id})}">Пополнить карту</a>
-                                    <a th:href="@{/card/delete(cardId=${card.id})}">Закрыть карту</a>
-                                    <a th:href="@{/deposit/open(cardId=${card.id})}">Оформить вклад</a>
+                                    <a th:href="@{/card/addMoney(cardId=${card.id})}">Пополнить карту</a><br/>
+                                    <a th:href="@{/card/close(cardId=${card.id})}">Закрыть карту</a><br/>
+                                    <a th:href="@{/card/delete(cardId=${card.id})}">Удалить карту</a><br/>
+                                    <a th:href="@{/deposit/open(cardId=${card.id})}">Оформить вклад</a><br/>
 
                                     <table class="depositTable" bgcolor="#dcdcdc" border="1" cellpadding="4">
-                                        <tr>
-                                            <td th:each="deposit: ${card.deposits}">
-                                                <p th:text="${deposit.duration}"/>
-                                                <p th:text="${deposit.percent}"/>
-                                                <p th:text="${deposit.startDate}"/>
-                                                <p th:text="${deposit.incomes.size()}"/>
+                                        <tr valign="top">
+                                            <td th:each="deposit: ${card.deposits}" th:if="${deposit.active}">
+                                                <div th:text="${deposit.active}"/>
+                                                <div th:text="${deposit.duration}"/>
+                                                <div th:text="${deposit.percent}"/>
+                                                <div th:text="${deposit.startDate}"/>
+                                                <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
+                                                <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
+                                                <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
                                                 <table cellspacing="5" bgcolor="aqua">
                                                     <tr>
                                                         <td>Дата</td>

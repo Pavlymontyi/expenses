@@ -1,6 +1,10 @@
 package com.kraynov.expenses.controller;
 
-import com.kraynov.expenses.service.DepositService;
+import com.kraynov.expenses.domain.dep.Card;
+import com.kraynov.expenses.domain.dep.Person;
+import com.kraynov.expenses.errorhandling.BusinessException;
+import com.kraynov.expenses.service.CardService;
+import com.kraynov.expenses.service.PersonService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,65 +18,53 @@ import static com.kraynov.expenses.controller.MainController.INDEX_URL_REDIRECTI
 @Controller
 @RequestMapping("/card")
 public class CardController {
+    private final PersonService personService;
+    private final CardService cardService;
 
-
-    private final DepositService service;
-
-    public CardController(DepositService service) {
-        this.service = service;
+    public CardController(PersonService personService, CardService cardService) {
+        this.personService = personService;
+        this.cardService = cardService;
     }
 
     @GetMapping("/add")
-    public String addCardScreen(@RequestParam Long personId, Map<String, Object> model) {
-        model.put("person", service.getPersonById(personId));
+    public String getOpenCardScreen(@RequestParam Long personId, Map<String, Object> model) throws BusinessException {
+        model.put("person", personService.getPersonById(personId));
         return "/card/addCard.html";
     }
 
     @PostMapping("/add")
-    public String addCard(@RequestParam Long personId,
-                          @RequestParam String cardOpenDate,
-                          @RequestParam String bankName,
-                          @RequestParam Integer balance) {
-        System.out.println("pakr work id=" + personId);
-        System.out.println("pakr work cardOpenDate=" + cardOpenDate);
-        System.out.println("pakr work bankName=" + bankName);
-        System.out.println("pakr work balance=" + balance);
-
-        service.openNewCard(personId, cardOpenDate, bankName, balance);
+    public String openNewCard(@RequestParam Long personId,
+                              @RequestParam String cardOpenDate,
+                              @RequestParam String bankName,
+                              @RequestParam Integer balance) throws BusinessException {
+        Person person = personService.getPersonById(personId);
+        cardService.openNewCard(person, cardOpenDate, bankName, balance);
         return INDEX_URL_REDIRECTION;
     }
 
     @GetMapping("/delete")
-    public String closeCard(@RequestParam Long cardId) {
-        System.out.println("deleting card with id=" + cardId);
-        service.closeCard(cardId);
+    public String deleteCard(@RequestParam Long cardId) {
+        cardService.deleteCard(cardId);
+        return INDEX_URL_REDIRECTION;
+    }
+
+    @GetMapping("/close")
+    public String closeCard(@RequestParam Long cardId) throws BusinessException {
+        Card card = cardService.getCardById(cardId);
+        cardService.closeCard(card);
         return INDEX_URL_REDIRECTION;
     }
 
     @GetMapping("/addMoney")
-    public String addMoneyToCard(@RequestParam Long cardId,  Map<String, Object> model) {
-        System.out.println("service.getCardById(cardId) = "+service.getCardById(cardId).getOpenDate());
-        model.put("card", service.getCardById(cardId));
+    public String addMoneyToCard(@RequestParam Long cardId, Map<String, Object> model) throws BusinessException {
+        model.put("card", cardService.getCardById(cardId));
         return "/card/addMoneyToCard.html";
     }
 
     @PostMapping("/addMoney")
     public String addMoneyToCard(@RequestParam Long cardId,
-                                 @RequestParam(defaultValue = "0") Integer newMoney) {
-        System.out.println("adding money to card with id=" + cardId);
-        service.addMoneyToCard(cardId, newMoney);
+                                 @RequestParam(defaultValue = "0") Integer newMoney) throws BusinessException {
+        cardService.addMoneyToCard(cardId, newMoney);
         return INDEX_URL_REDIRECTION;
     }
-
-//    @GetMapping("/deposit/add")
-//    public String addDeposit(Map<String, Object> model) {
-//        System.out.println("pakr work model"+model);
-//        return "card";
-//    }
-//
-//    @PostMapping("/deposit/add")
-//    public String addDeposit(Map<String, Object> model) {
-//        System.out.println("pakr work model"+model);
-//        return "redirect:/deposits";
-//    }
 }
