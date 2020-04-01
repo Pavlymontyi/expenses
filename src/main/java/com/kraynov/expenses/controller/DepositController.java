@@ -5,6 +5,7 @@ import com.kraynov.expenses.domain.dep.Deposit;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import com.kraynov.expenses.service.CardService;
 import com.kraynov.expenses.service.DepositService;
+import com.kraynov.expenses.service.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Map;
 
 @Controller
@@ -46,11 +49,10 @@ public class DepositController {
     }
 
     @PostMapping("/open")
-    public String openNewDeposit(@RequestParam Map<String, String> params) throws BusinessException {
-        System.out.println("asdasdas = "+params);
+    public String openNewDeposit(@RequestParam Map<String, String> params) throws BusinessException, ParseException {
         Card card = cardService.getCardById(Long.valueOf(params.get(CARD_ID_PARAM_NAME)));
         double percent = Double.valueOf(params.get(DEPOSIT_PERCENT_PARAM_NAME));
-        String openDate = params.get(DEPOSIT_OPEN_DATE_PARAM_NAME);
+        Date openDate = Utils.dateInputFormatter.parse(params.get(DEPOSIT_OPEN_DATE_PARAM_NAME));
         int duration = Integer.valueOf(params.get(DEPOSIT_DURATION_PARAM_NAME));
         int initialAmount = Integer.valueOf(params.get(DEPOSIT_INIT_AMOUNT_PARAM_NAME));
 
@@ -68,10 +70,10 @@ public class DepositController {
     }
 
     @PostMapping("/refill")
-    public String refillDeposit(@RequestParam Map<String, String> params) throws BusinessException {
+    public String refillDeposit(@RequestParam Map<String, String> params) throws BusinessException, ParseException {
         Deposit deposit = depositService.getDepositById(Long.valueOf(params.get(DEPOSIT_ID_AMOUNT_PARAM_NAME)));
         int refillAmount = Integer.valueOf(params.get(DEPOSIT_REFILL_AMOUNT_PARAM_NAME));
-        String refillDate = params.get(DEPOSIT_REFILL_DATE_PARAM_NAME);
+        Date refillDate = Utils.dateInputFormatter.parse(params.get(DEPOSIT_REFILL_DATE_PARAM_NAME));
         String cardIdParam = params.get(DEPOSIT_CARD_PARAM_NAME);
         Card card = StringUtils.isEmpty(cardIdParam) ? deposit.getCard() : cardService.getCardById(Long.valueOf(cardIdParam));
 

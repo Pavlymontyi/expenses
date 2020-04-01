@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -20,7 +21,7 @@ public class Income {
     private Long id;
 
     private int value;
-    private String date;
+    private Date date;
     @ManyToOne @JoinColumn(name = "deposit_id")
     private Deposit deposit;
     @ManyToOne @JoinColumn(name = "person_id")
@@ -29,7 +30,7 @@ public class Income {
     public Income() {
     }
 
-    public Income(int value, String date, Deposit deposit, Person owner) {
+    public Income(int value, Date date, Deposit deposit, Person owner) {
         this.value = value;
         this.date = date;
         this.deposit = deposit;

@@ -9,6 +9,8 @@ import com.kraynov.expenses.domain.dep.Income;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class DepositService {
     private final CardRepo cardRepo;
@@ -41,7 +43,7 @@ public class DepositService {
         return deposit.getIncomes().stream().mapToInt(Income::getValue).sum();
     }
 
-    public void refillDeposit(Deposit deposit, Card card, String refillDate, int refillAmount) throws BusinessException {
+    public void refillDeposit(Deposit deposit, Card card, Date refillDate, int refillAmount) throws BusinessException {
         if (refillAmount > card.getBalance()) {
             throw new BusinessException("Card doesn't have sufficient money amount to refill deposit");
         }

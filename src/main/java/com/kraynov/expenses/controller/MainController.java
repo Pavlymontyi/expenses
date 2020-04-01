@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/index")
+@RequestMapping({"/", "/index"})
 public class MainController {
     public static final String INDEX_PAGE_URL = "index";
     public static final String INDEX_URL_REDIRECTION = "redirect:/"+INDEX_PAGE_URL;

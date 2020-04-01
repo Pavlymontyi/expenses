@@ -7,6 +7,7 @@ import org.hibernate.annotations.SortComparator;
 
 import javax.persistence.*;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -27,7 +28,7 @@ public class Card {
     @Column(nullable = false)
     private String bank;
     @Column(nullable = false)
-    private String openDate;
+    private Date openDate;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "card")
     @SortComparator(DepositComparator.class)
     private Set<Deposit> deposits;
@@ -37,7 +38,7 @@ public class Card {
     public Card() {
     }
 
-    public Card(Person owner, String bank, String openDate) {
+    public Card(Person owner, String bank, Date openDate) {
         this.owner = owner;
         this.bank = bank;
         this.openDate = openDate;

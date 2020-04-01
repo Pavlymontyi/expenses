@@ -21,7 +21,7 @@
                             <tr valign="top">
                                 <td th:each="card: ${person.cards}">
                                     <p th:text="${card.bank}"/>
-                                    <p th:text="${card.openDate}"/>
+                                    <p th:text="${#calendars.format(card.openDate, 'dd-MM-yyyy')}"/>
                                     <p th:text="${card.balance}"/>
 
                                     <a th:href="@{/card/addMoney(cardId=${card.id})}">Пополнить карту</a><br/>
@@ -35,11 +35,11 @@
                                                 <div th:text="${deposit.active}"/>
                                                 <div th:text="${deposit.duration}"/>
                                                 <div th:text="${deposit.percent}"/>
-                                                <div th:text="${deposit.startDate}"/>
+                                                <div th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
                                                 <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
                                                 <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
                                                 <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
-                                                <table cellspacing="5" bgcolor="aqua">
+                                                <table cellspacing="5" cellpadding="1" bgcolor="#dcdcdc">
                                                     <tr>
                                                         <td>Дата</td>
                                                         <td>Сумма</td>
@@ -48,7 +48,7 @@
                                                         <!--                                                                <td>Итог</td>-->
                                                     </tr>
                                                     <tr th:each="income: ${deposit.incomes}">
-                                                        <td th:text="${income.date}"/>
+                                                        <td th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
                                                         <td th:text="${income.value}"/>
                                                         <td th:text="${income.owner.name}"/>
                                                         <!--                                                                <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>-->

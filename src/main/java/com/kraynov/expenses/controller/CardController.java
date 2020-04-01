@@ -5,12 +5,14 @@ import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import com.kraynov.expenses.service.CardService;
 import com.kraynov.expenses.service.PersonService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.Map;
 
 import static com.kraynov.expenses.controller.MainController.INDEX_URL_REDIRECTION;
@@ -29,12 +31,12 @@ public class CardController {
     @GetMapping("/add")
     public String getOpenCardScreen(@RequestParam Long personId, Map<String, Object> model) throws BusinessException {
         model.put("person", personService.getPersonById(personId));
-        return "/card/addCard.html";
+        return "/card/add.html";
     }
 
     @PostMapping("/add")
     public String openNewCard(@RequestParam Long personId,
-                              @RequestParam String cardOpenDate,
+                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date cardOpenDate,
                               @RequestParam String bankName,
                               @RequestParam Integer balance) throws BusinessException {
         Person person = personService.getPersonById(personId);
@@ -58,7 +60,7 @@ public class CardController {
     @GetMapping("/addMoney")
     public String addMoneyToCard(@RequestParam Long cardId, Map<String, Object> model) throws BusinessException {
         model.put("card", cardService.getCardById(cardId));
-        return "/card/addMoneyToCard.html";
+        return "/card/addMoney.html";
     }
 
     @PostMapping("/addMoney")

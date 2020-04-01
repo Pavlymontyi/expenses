@@ -19,7 +19,7 @@
         <td>Дата открытия карты</td>
         <td>
             <input type="text" name="cardOpenDate" disabled="true"
-                   th:value="${deposit.card.openDate}"/>
+                   th:value="${#calendars.format(deposit.card.openDate, 'dd-MM-yyyy')}"/>
         </td>
     </tr>
     <tr>
@@ -49,7 +49,7 @@
             <td>Дата открытия вклада</td>
             <td>
                 <input type="text" name="depositOpenDate" disabled="true"
-                       th:value="${deposit.startDate}"/>
+                       th:value="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
             </td>
         </tr>
         <tr>
@@ -89,7 +89,7 @@
         <tr>
             <td>Дата закрытия вклада</td>
             <td>
-                <input type="text" name="depositCloseDate" th:value="${deposit.startDate}"/>
+                <input type="date" name="depositCloseDate" th:value="${#calendars.format(deposit.startDate, 'yyyy-MM-dd')}"/>
             </td>
         </tr>
         <tr>

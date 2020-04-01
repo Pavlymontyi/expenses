@@ -7,6 +7,8 @@ import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class CardService {
     private final CardRepo cardRepo;
@@ -21,7 +23,7 @@ public class CardService {
         return cardRepo.findAll();
     }
 
-    public void openNewCard(Person person, String cardOpenDate, String bankName, Integer balance) throws BusinessException {
+    public void openNewCard(Person person, Date cardOpenDate, String bankName, Integer balance) throws BusinessException {
         Card newCard = new Card(person, bankName, cardOpenDate);
         newCard.setBalance(balance == null ? 0 : balance);
         cardRepo.save(newCard);

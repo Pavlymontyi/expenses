@@ -20,7 +20,7 @@
             <td>Дата открытия</td>
             <td>
                 <input type="text"  disabled="true"
-                       th:value="${card.openDate}"/>
+                       th:value="${#calendars.format(card.openDate, 'yyyy-MM-dd')}"/>
             </td>
         </tr>
         <tr>
