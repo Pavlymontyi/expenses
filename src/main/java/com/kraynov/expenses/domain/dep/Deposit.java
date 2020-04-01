@@ -53,35 +53,10 @@ public class Deposit {
         this.startDate = startDate;
         this.duration = duration;
         this.active = true;
+        this.endDate = new Date(startDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24));
+        System.out.println(endDate);
     }
 
-    //
-//    public Deposit(Card card, String startDate, double percent) {
-//        this.card = card;
-//        this.startDate = startDate;
-//        this.percent = percent;
-//    }
-//
-//    public Deposit(Card card, String startDate, double percent, Person moneyOwner) {
-//        this(card, startDate, percent);
-//        this.moneyOwner = moneyOwner;
-//    }
-//
-//    public void addIncome(Income income) {
-//        incomes.add(income);
-//    }
-//
-////    public double calculateTotalWithoutRevenue() {
-////        double sum = 0;
-////        for (Income income : incomes) {
-////            sum += income.value;
-////        }
-////        return sum;
-////    }
-//
-////    public double calculateFreeSpace() {
-////        return 0;
-////    }
 //
 //    public String getInfo() {
 //        return new StringBuilder()

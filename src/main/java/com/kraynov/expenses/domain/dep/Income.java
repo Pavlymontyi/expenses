@@ -1,30 +1,35 @@
 package com.kraynov.expenses.domain.dep;
 
+import com.kraynov.expenses.service.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name="incomes")
+@Table(name = "incomes")
 @Setter
 @Getter
 @ToString
 public class Income {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
-    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQUENCE")
+    @SequenceGenerator(name = "SEQUENCE", initialValue = 100, allocationSize = 25)
     private Long id;
 
     private int value;
     private Date date;
-    @ManyToOne @JoinColumn(name = "deposit_id")
+    @ManyToOne
+    @JoinColumn(name = "deposit_id")
     private Deposit deposit;
-    @ManyToOne @JoinColumn(name = "person_id")
+    @ManyToOne
+    @JoinColumn(name = "person_id")
     private Person owner;
 
     public Income() {
@@ -37,33 +42,25 @@ public class Income {
         this.owner = owner;
     }
 
-    //
-//    public Income(int value, String incomeDate, Deposit deposit) {
-//        this(value, incomeDate, deposit, deposit.getMoneyOwner());
-//    }
-//
-//    public Income(int value, String incomeDate, Deposit deposit, Person owner) {
-//        this.value = value;
-//        this.date = incomeDate;
-//        this.deposit = deposit;
-//        this.owner = owner;
-//    }
-//
-//    //todo: добавить учет даты
-//    public double getRevenue() {
-//        return deposit.percent/100 * this.value;
-//    }
-//
-//    //todo: добавить учет даты
-//    public String getRevenueClarification() {
-//
-//        return value+"*"+(deposit.percent/100)+"*"+"365"+"/"+"365";
-//    }
-//
-//    public double calculateTotal() {
-//        return value+getRevenue();
-//    }
-//
+    public double getRevenue() {
+        LocalDate depositEndDate = DateUtils.asLocalDate(deposit.getEndDate());
+        LocalDate incomeAdditionDate = DateUtils.asLocalDate(date);
+        long diff = ChronoUnit.DAYS.between(incomeAdditionDate, depositEndDate);
+
+        return deposit.getPercent() / 100 * this.value * diff / 365;
+    }
+
+    public String getRevenueClarification() {
+        LocalDate depositEndDate = DateUtils.asLocalDate(deposit.getEndDate());
+        LocalDate incomeAdditionDate = DateUtils.asLocalDate(date);
+        long diff = ChronoUnit.DAYS.between(incomeAdditionDate, depositEndDate);
+        return value + "*" + (deposit.getPercent() / 100) + "*" + diff + "/" + "365";
+    }
+
+    public double calculateTotal() {
+        return value + getRevenue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -2,6 +2,7 @@ package com.kraynov.expenses.service;
 
 import com.kraynov.expenses.dao.CardRepo;
 import com.kraynov.expenses.domain.dep.Card;
+import com.kraynov.expenses.domain.dep.Deposit;
 import com.kraynov.expenses.domain.dep.Income;
 import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
@@ -56,32 +57,32 @@ public class CardService {
      * Суммирует деньги, присутствующие на данный момент на карте.
      * Полезно, когда нужно проверить нарушение ограничений суммы в АСВ.
      * @param card карта
-     * @return сумму на карте
+     * @return сумму вкладов на карте
      */
-    public double calculateCurrentTotal(Card card) {
-        return card.getDeposits()
-                .stream()
-                .flatMap(t -> t.getIncomes().stream())
-                .map(Income::getValue)
-                .reduce(0, Integer::sum);
+    public Integer getTotal(Card card) {
+        return card.getDeposits().stream()
+                .filter(Deposit::getActive)
+                .flatMap(dep -> dep.getIncomes().stream())
+                .mapToInt(Income::getValue)
+                .sum();
     }
 
+    /**
+     * Суммирует ожидаемые доходы от процентов по всем активным вкладам на карте.
+     * Внимание: вычисление не привязано к клиенту банка, а только к карте.
+     * @param card карта
+     * @return сумму доходов по текущим вкладам карты
+     */
+    public Double getRevenue(Card card) {
+        return card.getDeposits().stream()
+                .filter(Deposit::getActive)
+                .flatMap(dep -> dep.getIncomes().stream())
+                .mapToDouble(Income::getRevenue)
+                .sum();
+    }
 
-//    /**
-//     * Суммирует ожидаемые доходы от процентов по всем активным вкладам
-//     * @param card карта
-//     * @return сумму доходов по текущим вкладам карты
-//     */
-//    public double calculateExpectedRevenue(Card card) {
-//        return card.getDeposits()
-//                .stream()
-//                .flatMap(t -> t.getIncomes().stream())
-//                .map(Income::getRevenue)
-//                .reduce((double) 0, Double::sum);
-//    }
-//
-//    public double calculateFreeSpace(Card card) {
-//        return 1_400_000 - calculateExpectedRevenue(card) - calculateCurrentTotal(card);
-//    }
+    public double calculateFreeSpace(Card card) {
+        return 1_400_000 - getRevenue(card) - getTotal(card);
+    }
 
 }

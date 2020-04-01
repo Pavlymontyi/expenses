@@ -23,7 +23,7 @@ public class DepositService {
         this.incomeRepo = incomeRepo;
     }
 
-    public void openNewDeposit(Card card, double percent, String openDate, int duration, int initialAmount) throws BusinessException {
+    public void openNewDeposit(Card card, double percent, Date openDate, int duration, int initialAmount) throws BusinessException {
         if (card.getBalance() <= initialAmount) {
             throw new BusinessException("Card doesn't have sufficient money amount to open deposit");
         }

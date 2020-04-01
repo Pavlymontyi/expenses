@@ -3,6 +3,14 @@
 <head>
     <title>Главная страница</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        a {
+            text-decoration: none; /* Отменяем подчеркивание у ссылки */
+        }
+        A:visited {
+            color: blue;
+        }
+    </style>
 </head>
 <body>
 
@@ -11,57 +19,109 @@
 
     <tr valign="top" align="center">
         <td th:each="person: ${persons}">
-            <table class="personTable" bgcolor="#8fbc8f">
+            <table class="personTable" bgcolor="#f0fff0" border="2">
                 <tr>
                     <td>
-                        <div th:text="${person.name}"/>
-                        <div th:text="${person.cards[0].deposits.size()}"/>
-                        <a th:href="@{/card/add(personId=${person.id})}">Открыть карту</a>
-                        <table class="cardTable" bgcolor="#faebd7" >
+                        Клиент: <a th:href="@{/person/view(personId=${person.id})}" th:text="${person.name}"></a><br/>
+                        <div th:text="'На вкладах ' + ${personsTotal[person.id]}"/>
+                        <div th:text="'Остатки на картах ' + ${personsTotal[person.id]}"/>
+                        <div th:text="'Итого денег ' + ${personsTotal[person.id]}"/>
+                        <a th:href="@{/card/add(personId=${person.id})}" >Открыть новую карту</a><br/>
+                        <table class="cardTable" bgcolor="#faebd7" border="1">
                             <tr valign="top">
                                 <td th:each="card: ${person.cards}">
-                                    <p th:text="${card.bank}"/>
-                                    <p th:text="${#calendars.format(card.openDate, 'dd-MM-yyyy')}"/>
-                                    <p th:text="${card.balance}"/>
+                                    <table class="cardInfoTable">
+                                        <caption>Информация по карте</caption>
+                                        <tr>
+                                            <td>Банк</td>
+                                            <td th:text="${card.bank}"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Открыта</td>
+                                            <td th:text="${#calendars.format(card.openDate, 'dd-MM-yyyy')}"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Сумма на вкладах</td>
+                                            <td th:text="${cardsTotal[card.id]}"/>
+                                        </tr>
+                                        <tr>
+                                            <td>Ожидаемые проценты</td>
+                                            <td th:text="${#numbers.formatDecimal(cardsRevenues[card.id],2,2)}"/>
 
-                                    <a th:href="@{/card/addMoney(cardId=${card.id})}">Пополнить карту</a><br/>
-                                    <a th:href="@{/card/close(cardId=${card.id})}">Закрыть карту</a><br/>
-                                    <a th:href="@{/card/delete(cardId=${card.id})}">Удалить карту</a><br/>
-                                    <a th:href="@{/deposit/open(cardId=${card.id})}">Оформить вклад</a><br/>
+                                        </tr>
+                                        <tr>
+                                            <td>Набежавшие проценты</td>
+                                            <td></td>
+                                            <!--                                            <td th:text="${#numbers.formatDecimal(cardsRevenues[card.id],2,2)}"/>-->
+                                        </tr>
+                                        <tr>
+                                            <td>Баланс</td>
+                                            <td th:text="${card.balance}"/>
+                                        </tr>
+                                    </table>
+
+                                    <table>
+                                        <tr>
+                                            <td><a th:href="@{/card/addMoney(cardId=${card.id})}">Пополнить карту</a></td>
+                                            <td><a th:href="@{/card/close(cardId=${card.id})}">Закрыть карту</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><a th:href="@{/deposit/open(cardId=${card.id})}">Оформить вклад</a></td>
+                                            <td><a th:href="@{/card/delete(cardId=${card.id})}">Удалить карту</a></td>
+                                        </tr>
+                                    </table>
 
                                     <table class="depositTable" bgcolor="#dcdcdc" border="1" cellpadding="4">
                                         <tr valign="top">
                                             <td th:each="deposit: ${card.deposits}" th:if="${deposit.active}">
-                                                <div th:text="${deposit.active}"/>
-                                                <div th:text="${deposit.duration}"/>
-                                                <div th:text="${deposit.percent}"/>
-                                                <div th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
-                                                <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
-                                                <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
-                                                <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
-                                                <table cellspacing="5" cellpadding="1" bgcolor="#dcdcdc">
+                                                <table bgcolor="#f0ffff" cellpadding="3">
+                                                    <caption>Информация по вкладу</caption>
+                                                    <tr>
+                                                        <td>Дата открытия</td>
+                                                        <td th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Дата завершения</td>
+                                                        <td th:text="${#calendars.format(deposit.endDate, 'dd-MM-yyyy')}"/>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Длительность</td>
+                                                        <td th:text="${deposit.duration}"/>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Процентная ставка</td>
+                                                        <td th:text="${deposit.percent}+'%'"/>
+                                                    </tr>
+                                                </table>
+
+                                                <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff">
+                                                    <caption>Подробности</caption>
                                                     <tr>
                                                         <td>Дата</td>
                                                         <td>Сумма</td>
                                                         <td>Чье</td>
-                                                        <!--                                                                <td>Проценты</td>-->
-                                                        <!--                                                                <td>Итог</td>-->
+                                                        <td>Проценты</td>
+                                                        <td>Итог</td>
                                                     </tr>
                                                     <tr th:each="income: ${deposit.incomes}">
                                                         <td th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
                                                         <td th:text="${income.value}"/>
                                                         <td th:text="${income.owner.name}"/>
-                                                        <!--                                                                <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>-->
-                                                        <!--                                                                <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>-->
+                                                        <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
+                                                        <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
                                                     </tr>
                                                     <tr valign="bottom">
                                                         <td><b>Итог</b></td>
                                                         <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
                                                         <td></td>
-                                                        <!--                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>-->
-                                                        <!--                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>-->
+                                                        <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
+                                                        <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 2,2)}" /></td>
                                                     </tr>
                                                 </table>
+
+                                                <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
+                                                <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
+                                                <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
                                             </td>
                                         </tr>
                                     </table>

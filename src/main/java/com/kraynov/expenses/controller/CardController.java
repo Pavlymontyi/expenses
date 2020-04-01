@@ -4,6 +4,7 @@ import com.kraynov.expenses.domain.dep.Card;
 import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import com.kraynov.expenses.service.CardService;
+import com.kraynov.expenses.service.DepositService;
 import com.kraynov.expenses.service.PersonService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -22,10 +23,12 @@ import static com.kraynov.expenses.controller.MainController.INDEX_URL_REDIRECTI
 public class CardController {
     private final PersonService personService;
     private final CardService cardService;
+    private final DepositService depositService;
 
-    public CardController(PersonService personService, CardService cardService) {
+    public CardController(PersonService personService, CardService cardService, DepositService depositService) {
         this.personService = personService;
         this.cardService = cardService;
+        this.depositService = depositService;
     }
 
     @GetMapping("/add")
@@ -45,7 +48,9 @@ public class CardController {
     }
 
     @GetMapping("/delete")
-    public String deleteCard(@RequestParam Long cardId) {
+    public String deleteCard(@RequestParam Long cardId) throws BusinessException {
+        Card card = cardService.getCardById(cardId);
+        card.getDeposits().forEach(depositService::delete);
         cardService.deleteCard(cardId);
         return INDEX_URL_REDIRECTION;
     }
