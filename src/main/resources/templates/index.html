@@ -76,6 +76,7 @@
                                             <td th:each="deposit: ${card.deposits}" th:if="${deposit.active}">
                                                 <table bgcolor="#f0ffff" cellpadding="3">
                                                     <caption>Информация по вкладу</caption>
+                                                    <a th:href="@{/card/edit(cardId=${card.id})}">Редактировать</a>
                                                     <tr>
                                                         <td>Дата открытия</td>
                                                         <td th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
@@ -104,8 +105,9 @@
                                                         <td>Итог</td>
                                                     </tr>
                                                     <tr th:each="income: ${deposit.incomes}">
+                                                        <td><a th:href="@{/income/edit(incomeId=${income.id})}">Изменить</a></td>
                                                         <td th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
-                                                        <td th:text="${income.value}"/>
+                                                        <td th:text="${income.value}">
                                                         <td th:text="${income.owner.name}"/>
                                                         <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
                                                         <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
