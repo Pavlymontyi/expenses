@@ -10,6 +10,29 @@
         A:visited {
             color: blue;
         }
+
+        .collapsible {
+            background-color: #777;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+        }
+
+        .active, .collapsible:hover {
+            background-color: #555;
+        }
+
+        .content {
+
+            max-height: 0;
+            max-width: 0;
+            overflow: hidden;
+            transition: max-weight 0.5s ease-out, max-height 0.5s ease-out;
+            background-color: #f1f1f1;
+        }
     </style>
 </head>
 <body>
@@ -95,37 +118,39 @@
                                                     </tr>
                                                 </table>
 
-                                                <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff">
-                                                    <caption>Подробности</caption>
-                                                    <tr>
-                                                        <td/>
-                                                        <td>Дата</td>
-                                                        <td>Сумма</td>
-                                                        <td>Чье</td>
-                                                        <td>Проценты</td>
-                                                        <td>Итог</td>
-                                                    </tr>
-                                                    <tr th:each="income: ${deposit.incomes}">
-                                                        <td><a th:href="@{/income/edit(incomeId=${income.id})}">Изменить</a></td>
-                                                        <td th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
-                                                        <td th:text="${income.value}">
-                                                        <td th:text="${income.owner.name}"/>
-                                                        <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
-                                                        <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
-                                                    </tr>
-                                                    <tr valign="bottom">
-                                                        <td/>
-                                                        <td><b>Итог</b></td>
-                                                        <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
-                                                        <td/>
-                                                        <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
-                                                        <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 2,2)}" /></td>
-                                                    </tr>
-                                                </table>
-
-                                                <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
-                                                <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
-                                                <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
+                                                <a class="collapsible">Подробности</a>
+                                                <div class="content">
+                                                        <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff">
+                                                            <caption>Подробности</caption>
+                                                            <tr>
+                                                                <td/>
+                                                                <td>Дата</td>
+                                                                <td>Сумма</td>
+                                                                <td>Чье</td>
+                                                                <td>Проценты</td>
+                                                                <td>Итог</td>
+                                                            </tr>
+                                                            <tr th:each="income: ${deposit.incomes}">
+                                                                <td><a th:href="@{/income/edit(incomeId=${income.id})}">Изменить</a></td>
+                                                                <td th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
+                                                                <td th:text="${income.value}">
+                                                                <td th:text="${income.owner.name}"/>
+                                                                <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
+                                                                <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
+                                                            </tr>
+                                                            <tr valign="bottom">
+                                                                <td/>
+                                                                <td><b>Итог</b></td>
+                                                                <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
+                                                                <td/>
+                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
+                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 2,2)}" /></td>
+                                                            </tr>
+                                                        </table>
+                                                        <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить вклад</a><br/>
+                                                        <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть вклад</a><br/>
+                                                        <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить вклад</a><br/>
+                                                </div>
                                             </td>
                                         </tr>
                                     </table>
@@ -211,14 +236,27 @@
 
 <br/>
 
-<!--<table border="1" cellpadding="5" cellspacing="0">-->
-<!--    <caption>Итоги</caption>-->
-<!--    <tr valign="top" align="center">-->
-<!--        <td th:each="person: ${persons}"-->
-<!--            align="center"-->
-<!--            th:text="${person"/>-->
-<!--    </tr>-->
-<!--</table>-->
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
 
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight){
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+
+            if (content.style.maxWidth) {
+                content.style.maxWidth = null;
+            } else {
+                content.style.maxWidth = content.scrollWidth + "px";
+            }
+        });
+    }
+</script>
 </body>
 </html>
