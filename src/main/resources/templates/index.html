@@ -76,7 +76,7 @@
                                             <td th:each="deposit: ${card.deposits}" th:if="${deposit.active}">
                                                 <table bgcolor="#f0ffff" cellpadding="3">
                                                     <caption>Информация по вкладу</caption>
-                                                    <a th:href="@{/card/edit(cardId=${card.id})}">Редактировать</a>
+                                                    <a th:href="@{/deposit/edit(depositId=${deposit.id})}">Редактировать</a>
                                                     <tr>
                                                         <td>Дата открытия</td>
                                                         <td th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
@@ -98,6 +98,7 @@
                                                 <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff">
                                                     <caption>Подробности</caption>
                                                     <tr>
+                                                        <td/>
                                                         <td>Дата</td>
                                                         <td>Сумма</td>
                                                         <td>Чье</td>
@@ -113,9 +114,10 @@
                                                         <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
                                                     </tr>
                                                     <tr valign="bottom">
+                                                        <td/>
                                                         <td><b>Итог</b></td>
                                                         <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
-                                                        <td></td>
+                                                        <td/>
                                                         <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
                                                         <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 2,2)}" /></td>
                                                     </tr>

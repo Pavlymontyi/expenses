@@ -67,4 +67,14 @@ public class DepositService {
         incomeRepo.deleteAll(deposit.getIncomes());
         depositRepo.delete(deposit);
     }
+
+    public void editDepositInfo(Long depositId, double percent, Date openDate, int duration) throws BusinessException {
+        Deposit deposit = getDepositById(depositId);
+        deposit.setPercent(percent);
+        deposit.setStartDate(openDate);
+        //todo: вынести этот ужас в подходящее место
+        deposit.setEndDate(new Date(openDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24)));
+        deposit.setDuration(duration);
+        depositRepo.save(deposit);
+    }
 }

@@ -103,4 +103,20 @@ public class DepositController {
         depositService.delete(deposit);
         return MainController.INDEX_URL_REDIRECTION;
     }
+
+    @GetMapping("/edit")
+    public String getEditScreen(@RequestParam Long depositId, Map<String, Object> model) throws BusinessException {
+        model.put("deposit", depositService.getDepositById(depositId));
+        return "/deposit/edit";
+    }
+
+    @PostMapping("/edit")
+    public String editDepositInfo(@RequestParam Map<String, String> params) throws BusinessException, ParseException {
+        Long depositId = Long.valueOf(params.get(DEPOSIT_ID_AMOUNT_PARAM_NAME));
+        double percent = Double.valueOf(params.get(DEPOSIT_PERCENT_PARAM_NAME));
+        Date openDate = Utils.dateInputFormatter.parse(params.get(DEPOSIT_OPEN_DATE_PARAM_NAME));
+        int duration = Integer.valueOf(params.get(DEPOSIT_DURATION_PARAM_NAME));
+        depositService.editDepositInfo(depositId, percent, openDate, duration);
+        return MainController.INDEX_URL_REDIRECTION;
+    }
 }
