@@ -57,12 +57,6 @@
                 <input type="text" name="duration" disabled="true" th:value="${income.deposit.duration}"/>
             </td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Сумма на вкладе</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="amount" th:value="'1000'"/>-->
-<!--            </td>-->
-<!--        </tr>-->
     </table>
 
     <table>
@@ -74,6 +68,18 @@
         <tr>
             <td>Сумма пополнения</td>
             <td><input type="text" name="incomeAmount" th:value="${income.value}"/></td>
+        </tr>
+        <tr>
+            <td>Владелец</td>
+            <td>
+                <select id="personSelector" name="personSelector">
+                    <option th:each="person: ${persons}"
+                            th:text="${person.name}"
+                            th:value="${person.id}"
+                            th:selected="${person == income.owner}"
+                    />
+                </select>
+            </td>
         </tr>
     </table>
 

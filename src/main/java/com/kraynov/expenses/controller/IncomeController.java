@@ -2,6 +2,7 @@ package com.kraynov.expenses.controller;
 
 import com.kraynov.expenses.errorhandling.BusinessException;
 import com.kraynov.expenses.service.IncomeService;
+import com.kraynov.expenses.service.PersonService;
 import com.kraynov.expenses.service.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +18,17 @@ import java.util.Map;
 @RequestMapping("/income")
 public class IncomeController {
     private final IncomeService incomeService;
+    private final PersonService personService;
 
-    public IncomeController(IncomeService incomeService) {
+    public IncomeController(IncomeService incomeService, PersonService personService) {
         this.incomeService = incomeService;
+        this.personService = personService;
     }
 
     @GetMapping("/edit")
     public String getEditIncomeScreen(@RequestParam Long incomeId, Map<String, Object> model) throws BusinessException {
         model.put("income", incomeService.getById(incomeId));
-        //incomeService.editIncome(incomeId, );
+        model.put("persons", personService.getAll());
         return "income/edit";
     }
 
@@ -34,7 +37,8 @@ public class IncomeController {
         Long incomeId = Long.valueOf(params.get("incomeId"));
         Date refillDate = Utils.dateInputFormatter.parse(params.get("incomeDate"));
         int amount = Integer.valueOf(params.get("incomeAmount"));
-        incomeService.changeIncomeInfo(incomeId, refillDate, amount);
+        Long ownerId = Long.valueOf(params.get("personSelector"));
+        incomeService.changeIncomeInfo(incomeId, refillDate, amount, personService.getPersonById(ownerId));
         return MainController.INDEX_URL_REDIRECTION;
     }
 

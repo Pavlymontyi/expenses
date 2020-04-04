@@ -23,6 +23,10 @@ public class PersonService {
         return personRepo.findAll();
     }
 
+    public Iterable<Person> getAll() {
+        return personRepo.findAll();
+    }
+
     public Person getPersonById(Long id) throws BusinessException {
         return personRepo.findById(id).orElseThrow(() -> new BusinessException("Person was not found by id=" + id));
     }
@@ -64,8 +68,9 @@ public class PersonService {
         Map<Long, Integer> result = new HashMap<>();
 
         for (Person person : persons) {
+            result.put(person.getId(), 0);
             for (Card card : person.getCards()) {
-                result.put(person.getId(), result.getOrDefault(person.getId(), 0) + card.getBalance());
+                result.put(person.getId(), result.get(person.getId()) + card.getBalance());
             }
         }
 
