@@ -46,9 +46,9 @@
                 <tr>
                     <td>
                         Клиент: <a th:href="@{/person/view(personId=${person.id})}" th:text="${person.name}"></a><br/>
-                        <div th:text="'На вкладах ' + ${personsTotal[person.id]}"/>
-                        <div th:text="'Остатки на картах ' + ${personsTotal[person.id]}"/>
-                        <div th:text="'Итого денег ' + ${personsTotal[person.id]}"/>
+                        <div th:text="'На вкладах ' + ${personToMoneyTotal[person.id]}"/>
+                        <div th:text="'Остатки на картах ' + ${personToCardsBalanceTotal[person.id]}"/>
+                        <div th:text="'Итого денег ' + ${personToMoneyTotal[person.id] + personToCardsBalanceTotal[person.id]}"/>
                         <a th:href="@{/card/add(personId=${person.id})}" >Открыть новую карту</a><br/>
                         <table class="cardTable" bgcolor="#faebd7" border="1">
                             <tr valign="top">

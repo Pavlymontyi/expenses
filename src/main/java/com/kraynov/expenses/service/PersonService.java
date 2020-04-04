@@ -27,8 +27,13 @@ public class PersonService {
         return personRepo.findById(id).orElseThrow(() -> new BusinessException("Person was not found by id=" + id));
     }
 
-    //todo: переписать нафиг, голова не варит совсем
-    public Map<Long, Integer> getPersonsTotal(Iterable<Person> persons) {
+    /**
+     * Подсчитывает сумму по дс, заложенным на вклады, в том числе на чужих вкладах.
+     * @param persons клиенты, для которых нужно вычислить сумму вложенных дс
+     * @return мапу, где ключом является id клиента, а значением сумма дс на вкладах.
+     */
+    public Map<Long, Integer> getDepositMoneyTotal(Iterable<Person> persons) {
+        //todo: переписать нафиг, голова не варит совсем
         Map<Long, Integer> personsTotal = new HashMap<>();
         for (Person person : persons) {
             personsTotal.put(person.getId(), 0);
@@ -47,5 +52,23 @@ public class PersonService {
         }
 
         return personsTotal;
+    }
+
+    /**
+     * Подсчитывает сумму остатков по картам.
+     * @param persons клиенты, для которых нужно вычислить сумму остатков по картам
+     * @return мапу, где ключом является id клиента, а значением сумму остатков по картам.
+     */
+    public Map<Long, Integer> getCardsBalanceTotal(Iterable<Person> persons) {
+        //todo: переписать на java8
+        Map<Long, Integer> result = new HashMap<>();
+
+        for (Person person : persons) {
+            for (Card card : person.getCards()) {
+                result.put(person.getId(), result.getOrDefault(person.getId(), 0) + card.getBalance());
+            }
+        }
+
+        return result;
     }
 }

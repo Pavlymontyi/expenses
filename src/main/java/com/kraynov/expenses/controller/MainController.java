@@ -31,18 +31,21 @@ public class MainController {
 
     @GetMapping
     public String index(Map<String, Object> model) {
-        Iterable<Person> depositInfoForAll = personService.getDepositInfoForAll();
-        model.put("persons", depositInfoForAll);
+        Iterable<Person> persons = personService.getDepositInfoForAll();
+
         //todo: вынести в сервисы
         Map<Long, Integer> cardsTotal = StreamSupport.stream(cardService.getAllCards().spliterator(), false)
                 .collect(Collectors.toMap(Card::getId, cardService::getTotal));
         Map<Long, Double> cardsRevenues = StreamSupport.stream(cardService.getAllCards().spliterator(), false)
                 .collect(Collectors.toMap(Card::getId, cardService::getRevenue));
-        Map<Long, Integer> personsTotal = personService.getPersonsTotal(depositInfoForAll);
+        Map<Long, Integer> personToMoneyTotal = personService.getDepositMoneyTotal(persons);
+        Map<Long, Integer> personToCardBalance = personService.getCardsBalanceTotal(persons);
 
+        model.put("persons", persons);
         model.put("cardsTotal", cardsTotal);
         model.put("cardsRevenues", cardsRevenues);
-        model.put("personsTotal", personsTotal);
+        model.put("personToMoneyTotal", personToMoneyTotal);
+        model.put("personToCardsBalanceTotal", personToCardBalance);
         return INDEX_PAGE_URL;
     }
 }
