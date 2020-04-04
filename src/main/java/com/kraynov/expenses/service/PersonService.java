@@ -8,7 +8,9 @@ import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,8 +21,15 @@ public class PersonService {
         this.personRepo = personRepo;
     }
 
-    public Iterable<Person> getDepositInfoForAll() {
-        return personRepo.findAll();
+    public Map<Integer, List<Person>> getDepositInfoForAll() {
+        Iterable<Person> persons = personRepo.findAll();
+        Map<Integer, List<Person>> groupToPersonList = new HashMap<>();
+        for (Person person : persons) {
+            List<Person> personList = groupToPersonList.computeIfAbsent(person.getGroupId(), k -> new ArrayList<>());
+            personList.add(person);
+        }
+
+        return groupToPersonList;
     }
 
     public Iterable<Person> getAll() {

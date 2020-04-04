@@ -37,11 +37,12 @@
 </head>
 <body>
 
+<div th:each="entry: ${groupAndPersons.entrySet()}">
+
 <table border="1" cellpadding="5" cellspacing="0" class="wrapperTable" bgcolor="#f5f5dc">
-    <caption>Вклады</caption>
 
     <tr valign="top" align="center">
-        <td th:each="person: ${persons}">
+        <td th:each="person: ${entry.getValue()}">
             <table class="personTable" bgcolor="#f0fff0" border="2">
                 <tr>
                     <td>
@@ -233,8 +234,8 @@
 <!--    </tr>-->
 
 </table>
-
-<br/>
+    <br/>
+</div>
 
 <script>
     var coll = document.getElementsByClassName("collapsible");
