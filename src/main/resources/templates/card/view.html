@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Информация о карте</H5>
+
+<table>
+    <tr>
+        <td>Владелец карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${card.owner.name}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Дата открытия</td>
+        <td>
+            <input type="text" name="cardOpenDate" disabled="true"
+                   th:value="${#calendars.format(card.openDate, 'dd-MM-yyyy')}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Банк</td>
+        <td>
+            <input type="text" disabled="true" name="bankName" th:value="${card.bank}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Остаток на карте</td>
+        <td>
+            <input type="text" name="balance" disabled="true" th:value="${card.balance}"/>
+        </td>
+    </tr>
+</table>
+
+<div>Вклады</div>
+<table>
+    <thead>
+        <td>Активный</td>
+        <td>Дата открытия</td>
+        <td>Дата закрытия</td>
+        <td>Ожидаемые проценты</td>
+        <td>Начисленные проценты</td>
+    </thead>
+    <tr th:each="deposit: ${card.deposits}">
+        <td th:text="${deposit.active}"></td>
+        <td th:text="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"></td>
+        <td th:text="${#calendars.format(deposit.endDate, 'dd-MM-yyyy')}"></td>
+        <td th:text="${deposit.revenue}"></td>
+        <td th:text="${deposit.revenue}"></td>
+        <td/>
+    </tr>
+</table>
+
+
+<form>
+    <input type="hidden" name="cardId" th:value="${card.id}"/>
+
+<!--    <input type="submit" formmethod="post" value="Оформить карту"/>-->
+</form>
+</body>
+</html>

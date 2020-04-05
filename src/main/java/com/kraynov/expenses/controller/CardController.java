@@ -74,4 +74,10 @@ public class CardController {
         cardService.addMoneyToCard(cardId, newMoney);
         return INDEX_URL_REDIRECTION;
     }
+
+    @GetMapping("/view")
+    public String view(@RequestParam Long cardId, Map<String, Object> model) throws BusinessException {
+        model.put("card", cardService.getCardById(cardId));
+        return "/card/view.html";
+    }
 }
