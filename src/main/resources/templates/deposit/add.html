@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Открытие нового вклада</H5>
+
+<table>
+    <caption>Данные по карте</caption>
+    <tr>
+        <td>Владелец карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${card.owner.name}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Дата открытия карты</td>
+        <td>
+            <input type="text" name="cardOpenDate" disabled="true"
+                   th:value="${#calendars.format(card.openDate, 'dd-MM-yyyy')}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Банк</td>
+        <td>
+            <input type="text" name="bankName" disabled="true" th:value="${card.bank}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Сумма на карте</td>
+        <td>
+            <input type="text" name="balance" disabled="true" th:value="${card.balance}"/>
+        </td>
+    </tr>
+</table>
+
+<form>
+    <table>
+        <caption>Данные вклада</caption>
+        <tr>
+            <td>Годовая ставка</td>
+            <td>
+                <input type="text" name="percent" th:value="'7.6'"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Дата открытия вклада</td>
+            <td>
+                <input type="date" name="depositOpenDate" th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Срок вклада (в днях)</td>
+            <td>
+                <input type="text" name="duration" th:value="${'365'}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Сумма пополнения</td>
+            <td>
+                <input type="text" name="amount" th:value="'1000'"/>
+            </td>
+        </tr>
+    </table>
+
+    <input type="hidden" name="cardId" th:value="${card.id}"/>
+    <input type="submit" formmethod="post" value="Оформить вклад"/>
+</form>
+</body>
+</html>

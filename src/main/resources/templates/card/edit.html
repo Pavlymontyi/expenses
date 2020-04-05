@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Открытие карты</H5>
+
+<form>
+    <table>
+        <tr>
+            <td>Владелец карты</td>
+            <td>
+                <input type="text" disabled="true" th:value="${person.name}"/>
+                <input type="hidden" name="personId" th:value="${person.id}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Дата открытия</td>
+            <td>
+                <input type="text" name="cardOpenDate"
+                       th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Банк</td>
+            <td>
+                <input type="text" name="bankName" th:value="'Совкомбанк'"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Сумма</td>
+            <td>
+                <input type="text" name="balance" th:value="0"/>
+            </td>
+        </tr>
+    </table>
+    <input type="submit" formmethod="post" value="Оформить карту"/>
+</form>
+</body>
+</html>

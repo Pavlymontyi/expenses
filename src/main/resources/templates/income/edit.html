@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Редактирование акта пополнения вклада</H5>
+
+<table>
+    <caption>Данные по карте</caption>
+    <tr>
+        <td>Владелец карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${income.deposit.card.owner.name}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Дата открытия карты</td>
+        <td>
+            <input type="text" name="cardOpenDate" disabled="true"
+                   th:value="${#calendars.format(income.deposit.card.openDate, 'dd-MM-yyyy')}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Банк</td>
+        <td>
+            <input type="text" name="bankName" disabled="true" th:value="${income.deposit.card.bank}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Остаток на карте</td>
+        <td>
+            <input type="text" name="balance" disabled="true" th:value="${income.deposit.card.balance}"/>
+        </td>
+    </tr>
+</table>
+
+<form>
+    <table>
+        <caption>Данные вклада</caption>
+        <tr>
+            <td>Годовая ставка</td>
+            <td>
+                <input type="text" name="percent" disabled="true" th:value="${income.deposit.percent}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Дата открытия вклада</td>
+            <td>
+                <input type="date" name="depositOpenDate" disabled="true" th:value="${#calendars.format(income.deposit.startDate, 'yyyy-MM-dd')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Срок вклада (в днях)</td>
+            <td>
+                <input type="text" name="duration" disabled="true" th:value="${income.deposit.duration}"/>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <caption>Данные акта пополнения вклада</caption>
+        <tr>
+            <td>Дата пополнения</td>
+            <td><input type="date" name="incomeDate" th:value="${#calendars.format(income.date, 'yyyy-MM-dd')}"/></td>
+        </tr>
+        <tr>
+            <td>Сумма пополнения</td>
+            <td><input type="text" name="incomeAmount" th:value="${income.value}"/></td>
+        </tr>
+        <tr>
+            <td>Владелец</td>
+            <td>
+                <select id="personSelector" name="personSelector">
+                    <option th:each="person: ${persons}"
+                            th:text="${person.name}"
+                            th:value="${person.id}"
+                            th:selected="${person == income.owner}"
+                    />
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <input type="hidden" name="incomeId" th:value="${income.id}"/>
+    <input type="submit" formmethod="post" value="Сохранить"/>
+</form>
+</body>
+</html>

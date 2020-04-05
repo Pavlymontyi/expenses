@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Закрытие вклада</H5>
+
+<table>
+    <caption>Данные по карте</caption>
+    <tr>
+        <td>Владелец карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${deposit.card.owner.name}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Дата открытия карты</td>
+        <td>
+            <input type="text" name="cardOpenDate" disabled="true"
+                   th:value="${#calendars.format(deposit.card.openDate, 'dd-MM-yyyy')}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Банк</td>
+        <td>
+            <input type="text" name="bankName" disabled="true" th:value="${deposit.card.bank}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Сумма на карте</td>
+        <td>
+            <input type="text" name="balance" disabled="true" th:value="${deposit.card.balance}"/>
+        </td>
+    </tr>
+</table>
+
+<form method="post">
+    <table>
+        <caption>Данные вклада</caption>
+<!--        <tr>-->
+<!--            <td>Годовая ставка</td>-->
+<!--            <td>-->
+<!--                <input type="text" name="percent" disabled="true" th:value="th:value=${deposit.percent}"/>-->
+<!--            </td>-->
+<!--        </tr>-->
+        <tr>
+            <td>Дата открытия вклада</td>
+            <td>
+                <input type="text" name="depositOpenDate" disabled="true"
+                       th:value="${#calendars.format(deposit.startDate, 'dd-MM-yyyy')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Срок вклада (в днях)</td>
+            <td>
+                <input type="text" name="duration" disabled="true" th:value="${deposit.duration}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Ожидаемая дата закрытия вклада</td>
+            <td>
+                <input type="text" disabled="true"/>
+            </td>
+        </tr>
+<!--        <tr>-->
+<!--            <td>Сумма на вкладе</td>-->
+<!--            <td>-->
+<!--                <input type="text" name="amount" disabled="true" th:value="${depositTotal}"/>-->
+<!--            </td>-->
+<!--        </tr>-->
+        <tr>
+            <td>Ожидаемые проценты</td>
+            <td>
+                <input type="text" disabled="true"/>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <caption>Данные закрытия вклада</caption>
+<!--        <tr>-->
+<!--            <td>Фактическая годовая ставка</td>-->
+<!--            <td>-->
+<!--                <input type="text" name="percentActual" th:value="th:value=${deposit.percent}"/>-->
+<!--            </td>-->
+<!--        </tr>-->
+        <tr>
+            <td>Дата закрытия вклада</td>
+            <td>
+                <input type="date" name="depositCloseDate" th:value="${#calendars.format(deposit.startDate, 'yyyy-MM-dd')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Фактические проценты</td>
+            <td>
+                <input type="text" name="percentAmount"/>
+            </td>
+        </tr>
+<!--        <tr>-->
+<!--            <td>Карта</td>-->
+<!--            <td>-->
+<!--                <select id="cardSelector" name="cardSelector">-->
+<!--                    <option th:each="card: ${cards}"-->
+<!--                            th:text="${card.owner.name} + ' ' + ${card.bank}"-->
+<!--                            th:value="${card.id}"-->
+<!--                            th:selected="${card==deposit.card}"-->
+<!--                    />-->
+<!--                </select>-->
+<!--            </td>-->
+<!--        </tr>-->
+    </table>
+
+    <input type="hidden" name="depositId" th:value="${deposit.id}"/>
+    <input type="submit" value="Закрыть вклад"/>
+</form>
+</body>
+</html>

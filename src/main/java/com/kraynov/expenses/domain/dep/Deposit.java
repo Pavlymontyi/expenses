@@ -1,56 +1,72 @@
 package com.kraynov.expenses.domain.dep;
 
-import com.kraynov.expenses.domain.dep.card.CardImpl;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.SortComparator;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Set;
 
-@Data
+@Entity
+@Table(name="deposits")
+@Setter
+@Getter
+@ToString
 public class Deposit {
 
-    CardImpl card;
-    Person moneyOwner;
-    double percent;
-    String startDate;
-    List<Income> incomes = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
+    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
+    private Long id;
 
-    public Deposit(CardImpl card, String startDate, double percent) {
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
+    private Boolean active;
+    private double percent;
+    private Date startDate;
+    private Date endDate;
+    private int duration;
+    private int revenue;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "deposit")
+    @SortComparator(IncomeComparator.class)
+    private Set<Income> incomes;
+
+    public static class IncomeComparator implements Comparator<Income> {
+
+        @Override
+        public int compare(Income o1, Income o2) {
+            int res = o1.getDate().compareTo(o2.getDate());
+            return res == 0 ? o1.getId().compareTo(o2.getId()) : res;
+        }
+    }
+
+    public Deposit() {
+    }
+
+    public Deposit(Card card, double percent, Date startDate, int duration) {
         this.card = card;
-        this.startDate = startDate;
         this.percent = percent;
+        this.startDate = startDate;
+        this.duration = duration;
+        this.active = true;
+        this.endDate = new Date(startDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24));
+        System.out.println(endDate);
     }
 
-    public Deposit(CardImpl card, String startDate, double percent, Person moneyOwner) {
-        this(card, startDate, percent);
-        this.moneyOwner = moneyOwner;
-    }
-
-    public void addIncome(Income income) {
-        incomes.add(income);
-    }
-
-//    public double calculateTotalWithoutRevenue() {
-//        double sum = 0;
-//        for (Income income : incomes) {
-//            sum += income.value;
-//        }
-//        return sum;
+//
+//    public String getInfo() {
+//        return new StringBuilder()
+//                .append(card.getOwner().getName())
+//                .append(", ")
+//                .append(percent)
+//                .append("%, ")
+//                .append(startDate)
+////                .append(", Сумма: ")
+////                .append(calculateTotalWithoutRevenue())
+//                .toString();
 //    }
-
-//    public double calculateFreeSpace() {
-//        return 0;
-//    }
-
-    public String getInfo() {
-        return new StringBuilder()
-                .append(card.getOwner().getName())
-                .append(", ")
-                .append(percent)
-                .append("%, ")
-                .append(startDate)
-//                .append(", Сумма: ")
-//                .append(calculateTotalWithoutRevenue())
-                .toString();
-    }
 }
