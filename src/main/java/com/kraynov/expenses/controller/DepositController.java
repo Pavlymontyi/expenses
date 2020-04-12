@@ -25,6 +25,7 @@ public class DepositController {
     private static final String DEPOSIT_OPEN_DATE_PARAM_NAME = "depositOpenDate";
     private static final String DEPOSIT_DURATION_PARAM_NAME = "duration";
     private static final String DEPOSIT_INIT_AMOUNT_PARAM_NAME = "amount";
+    private static final String DEPOSIT_REFILLABLE_PARAM_NAME = "refillable";
 
     private static final String DEPOSIT_ID_AMOUNT_PARAM_NAME = "depositId";
     private static final String DEPOSIT_REFILL_AMOUNT_PARAM_NAME = "refillAmount";
@@ -55,8 +56,9 @@ public class DepositController {
         Date openDate = Utils.dateInputFormatter.parse(params.get(DEPOSIT_OPEN_DATE_PARAM_NAME));
         int duration = Integer.valueOf(params.get(DEPOSIT_DURATION_PARAM_NAME));
         int initialAmount = Integer.valueOf(params.get(DEPOSIT_INIT_AMOUNT_PARAM_NAME));
+        boolean refillable = "on".equals(params.get(DEPOSIT_REFILLABLE_PARAM_NAME));
 
-        depositService.openNewDeposit(card, percent, openDate, duration, initialAmount);
+        depositService.openNewDeposit(card, percent, openDate, duration, initialAmount, refillable);
         return MainController.INDEX_URL_REDIRECTION;
     }
 
@@ -116,7 +118,9 @@ public class DepositController {
         double percent = Double.valueOf(params.get(DEPOSIT_PERCENT_PARAM_NAME));
         Date openDate = Utils.dateInputFormatter.parse(params.get(DEPOSIT_OPEN_DATE_PARAM_NAME));
         int duration = Integer.valueOf(params.get(DEPOSIT_DURATION_PARAM_NAME));
-        depositService.editDepositInfo(depositId, percent, openDate, duration);
+        boolean refillable = "on".equals(params.get(DEPOSIT_REFILLABLE_PARAM_NAME));
+
+        depositService.editDepositInfo(depositId, percent, openDate, duration, refillable);
         return MainController.INDEX_URL_REDIRECTION;
     }
 }

@@ -19,7 +19,7 @@ public class Deposit {
 
     @Id
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
-    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
+    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=10)
     private Long id;
 
     @ManyToOne
@@ -31,6 +31,7 @@ public class Deposit {
     private Date endDate;
     private int duration;
     private int revenue;
+    private Boolean refillable;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "deposit")
     @SortComparator(IncomeComparator.class)
     private Set<Income> incomes;
@@ -53,6 +54,7 @@ public class Deposit {
         this.startDate = startDate;
         this.duration = duration;
         this.active = true;
+        this.refillable = true;
         this.endDate = new Date(startDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24));
         System.out.println(endDate);
     }

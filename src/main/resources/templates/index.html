@@ -130,33 +130,33 @@
 
                                                 <a class="collapsible">Подробности</a>
                                                 <div class="content">
-                                                        <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff">
-<!--                                                            <caption>Подробности</caption>-->
-                                                            <tr>
+                                                        <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff" >
+                                                            <div th:text="${deposit.refillable} ? 'Вклад пополняемый' : 'Вклад не пополняемый'"/>
+                                                            <tr align="right">
                                                                 <td>Дата</td>
                                                                 <td>Сумма</td>
                                                                 <td>Чье</td>
                                                                 <td>Проценты</td>
                                                                 <td>Итог</td>
                                                             </tr>
-                                                            <tr th:each="income: ${deposit.incomes}">
+                                                            <tr th:each="income: ${deposit.incomes}" align="right">
                                                                 <td nowrap th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
                                                                 <td>
                                                                     <a th:href="@{/income/edit(incomeId=${income.id})}" th:text="${income.value}"/>
                                                                 </td>
                                                                 <td th:text="${income.owner.name}"/>
-                                                                <td th:text="${#numbers.formatDecimal(income.getRevenue(),2,2)}" th:title="${income.getRevenueClarification()}"/>
-                                                                <td th:text="${#numbers.formatDecimal(income.calculateTotal(),2,2)}"/>
+                                                                <td th:text="${#numbers.formatDecimal(income.getRevenue(),1,0)}" th:title="${income.getRevenueClarification()}"/>
+                                                                <td th:text="${#numbers.formatDecimal(income.calculateTotal(),1,0)}"/>
                                                             </tr>
-                                                            <tr valign="bottom">
+                                                            <tr valign="bottom" align="right">
                                                                 <td><b>Итог</b></td>
                                                                 <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
                                                                 <td/>
-                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 2,2)}" /></td>
-                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 2,2)}" /></td>
+                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![getRevenue()]), 1,0)}" /></td>
+                                                                <td><b th:text="${#numbers.formatDecimal(#aggregates.sum(deposit.incomes.![calculateTotal()]), 1, 0)}" /></td>
                                                             </tr>
                                                         </table>
-                                                        <a th:href="@{/deposit/refill(depositId=${deposit.id})}">Пополнить</a>
+                                                        <a th:href="@{/deposit/refill(depositId=${deposit.id})}" th:if="${deposit.refillable}">Пополнить</a>
                                                         <a th:href="@{/deposit/close(depositId=${deposit.id})}">Закрыть</a>
                                                         <a th:href="@{/deposit/delete(depositId=${deposit.id})}">Удалить</a>
                                                 </div>

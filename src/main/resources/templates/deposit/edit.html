@@ -57,6 +57,12 @@
                 <input type="text" name="duration" th:value="${deposit.duration}"/>
             </td>
         </tr>
+        <tr>
+            <td>Возможность пополнения</td>
+            <td>
+                <input type="checkbox" name="refillable" th:checked="${deposit.refillable}"/>
+            </td>
+        </tr>
     </table>
 
     <input type="hidden" name="depositId" th:value="${deposit.id}"/>
