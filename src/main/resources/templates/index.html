@@ -132,6 +132,7 @@
                                                 <div class="content">
                                                         <table cellspacing="5" cellpadding="1" bgcolor="#f0f8ff" >
                                                             <div th:text="${deposit.refillable} ? 'Вклад пополняемый' : 'Вклад не пополняемый'"/>
+                                                            <div th:text="'Свободное место: ' + ${depositFreeSpaces[deposit.id]}"/>
                                                             <tr align="right">
                                                                 <td>Дата</td>
                                                                 <td>Сумма</td>

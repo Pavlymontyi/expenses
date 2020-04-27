@@ -42,6 +42,7 @@ public class MainController {
                 .collect(Collectors.toMap(Card::getId, cardService::getRevenue));
         Map<Long, Integer> personToMoneyTotal = personService.getDepositMoneyTotal(persons);
         Map<Long, Integer> personToCardBalance = personService.getCardsBalanceTotal(persons);
+        Map<Long, Integer> depositFreeSpaces = depositService.calculateFreeSpace(depositService.getActiveDeposits());
 
 //        model.put("persons", persons);
         model.put("groupAndPersons", groupAndPersons);
@@ -49,6 +50,8 @@ public class MainController {
         model.put("cardsRevenues", cardsRevenues);
         model.put("personToMoneyTotal", personToMoneyTotal);
         model.put("personToCardsBalanceTotal", personToCardBalance);
+        model.put("depositFreeSpaces", depositFreeSpaces);
+
         return INDEX_PAGE_URL;
     }
 }

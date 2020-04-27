@@ -1,5 +1,6 @@
 package com.kraynov.expenses.domain.dep;
 
+import com.kraynov.expenses.service.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -55,20 +56,7 @@ public class Deposit {
         this.duration = duration;
         this.active = true;
         this.refillable = true;
-        this.endDate = new Date(startDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24));
+        this.endDate = DateUtils.plusDays(startDate, duration);
         System.out.println(endDate);
     }
-
-//
-//    public String getInfo() {
-//        return new StringBuilder()
-//                .append(card.getOwner().getName())
-//                .append(", ")
-//                .append(percent)
-//                .append("%, ")
-//                .append(startDate)
-////                .append(", Сумма: ")
-////                .append(calculateTotalWithoutRevenue())
-//                .toString();
-//    }
 }

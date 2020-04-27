@@ -23,4 +23,8 @@ public class DateUtils {
     public static LocalDateTime asLocalDateTime(Date date) {
         return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
+
+    public static Date plusDays(Date openDate, int duration) {
+        return asDate(asLocalDate(openDate).plusDays(duration));
+    }
 }

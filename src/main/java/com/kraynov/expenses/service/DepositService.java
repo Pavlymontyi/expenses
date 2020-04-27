@@ -9,7 +9,11 @@ import com.kraynov.expenses.domain.dep.Income;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class DepositService {
@@ -21,6 +25,10 @@ public class DepositService {
         this.cardRepo = cardRepo;
         this.depositRepo = depositRepo;
         this.incomeRepo = incomeRepo;
+    }
+
+    public List<Deposit> getActiveDeposits() {
+        return depositRepo.findByActiveTrue();
     }
 
     public void openNewDeposit(Card card, double percent, Date openDate, int duration, int initialAmount, boolean refillable) throws BusinessException {
@@ -48,7 +56,7 @@ public class DepositService {
         if (refillAmount > card.getBalance()) {
             throw new BusinessException("Card doesn't have sufficient money amount to refill deposit");
         }
-        if (Boolean.TRUE.equals(deposit.getRefillable())) {
+        if (!Boolean.TRUE.equals(deposit.getRefillable())) {
             throw new BusinessException("Deposit is not refillable");
         }
 
@@ -77,9 +85,33 @@ public class DepositService {
         deposit.setPercent(percent);
         deposit.setStartDate(openDate);
         //todo: вынести этот ужас в подходящее место
-        deposit.setEndDate(new Date(openDate.getTime() + ((long) duration * 1000 * 60 * 60 * 24)));
+        deposit.setEndDate(DateUtils.plusDays(openDate, duration));
         deposit.setDuration(duration);
         deposit.setRefillable(refillable);
         depositRepo.save(deposit);
+    }
+
+    public Integer calculateFreeSpace(Deposit dep) {
+        int summ = 0;
+        LocalDate startDate = DateUtils.asLocalDate(dep.getStartDate());
+        LocalDate initIncomeDate = startDate.plusDays(10);
+
+        for (Income income : dep.getIncomes()) {
+            if (initIncomeDate.isAfter(DateUtils.asLocalDate(income.getDate()))) {
+                summ += income.getValue();
+            } else {
+                summ -= income.getValue();
+            }
+        }
+
+        return summ;
+    }
+
+    public Map<Long, Integer> calculateFreeSpace(List<Deposit> activeDeposits) {
+        Map<Long, Integer> res = new HashMap<>();
+        for (Deposit deposit : activeDeposits) {
+            res.put(deposit.getId(),calculateFreeSpace(deposit));
+        }
+        return res;
     }
 }
