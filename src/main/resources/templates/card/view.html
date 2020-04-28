@@ -54,11 +54,25 @@
     </tr>
 </table>
 
-
-<form>
+<br/>
+<div>Расходы за текущий отчетный период</div>
+<table>
+    <thead>
+    <td>Сумма</td>
+    <td>Дата</td>
+    <td>Категория</td>
+    <td>Описание</td>
+    </thead>
+    <tr th:each="expense: ${expenses}">
+        <td th:text="${expense.amount}"></td>
+        <td th:text="${#calendars.format(expense.expenseDate, 'dd-MM-yyyy')}"></td>
+        <td th:text="${expense.category?.name}"></td>
+        <td th:text="${expense.description}"></td>
+    </tr>
+</table>
+<form method="get" action="/expenses/add">
     <input type="hidden" name="cardId" th:value="${card.id}"/>
-
-<!--    <input type="submit" formmethod="post" value="Оформить карту"/>-->
+    <input type="submit" value="Добавить"/>
 </form>
 </body>
 </html>

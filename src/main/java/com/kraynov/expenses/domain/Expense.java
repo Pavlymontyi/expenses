@@ -1,5 +1,6 @@
 package com.kraynov.expenses.domain;
 
+import com.kraynov.expenses.domain.dep.Card;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,6 +29,10 @@ public class Expense {
     private Date expenseDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="card_id")
+    private Card card;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")
     private Category category;
 
@@ -36,6 +41,13 @@ public class Expense {
 
     public Expense(double amount) {
         this.amount = amount;
+    }
+
+    public Expense(Card card, double amount, Date expenseDate, Category category) {
+        this.card = card;
+        this.amount = amount;
+        this.expenseDate = expenseDate;
+        this.category = category;
     }
 
     @Override

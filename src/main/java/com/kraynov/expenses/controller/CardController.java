@@ -5,6 +5,7 @@ import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import com.kraynov.expenses.service.CardService;
 import com.kraynov.expenses.service.DepositService;
+import com.kraynov.expenses.service.ExpenseService;
 import com.kraynov.expenses.service.PersonService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -24,11 +25,13 @@ public class CardController {
     private final PersonService personService;
     private final CardService cardService;
     private final DepositService depositService;
+    private final ExpenseService expenseService;
 
-    public CardController(PersonService personService, CardService cardService, DepositService depositService) {
+    public CardController(PersonService personService, CardService cardService, DepositService depositService, ExpenseService expenseService) {
         this.personService = personService;
         this.cardService = cardService;
         this.depositService = depositService;
+        this.expenseService = expenseService;
     }
 
     @GetMapping("/add")
@@ -77,7 +80,9 @@ public class CardController {
 
     @GetMapping("/view")
     public String view(@RequestParam Long cardId, Map<String, Object> model) throws BusinessException {
-        model.put("card", cardService.getCardById(cardId));
+        Card card = cardService.getCardById(cardId);
+        model.put("card", card);
+        model.put("expenses", expenseService.getExpensesByCard(card));
         return "/card/view.html";
     }
 }

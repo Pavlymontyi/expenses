@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<H5>Внесение расхода</H5>
+
+<table>
+    <caption>Данные по карте</caption>
+    <tr>
+        <td>Владелец карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${card.owner.name}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Дата открытия карты</td>
+        <td>
+            <input type="text" disabled="true" th:value="${#calendars.format(card.openDate, 'yyyy-MM-dd')}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Банк</td>
+        <td>
+            <input type="text" disabled="true" th:value="${card.bank}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>Сумма на карте</td>
+        <td>
+            <input type="text" disabled="true" th:value="${card.balance}"/>
+        </td>
+    </tr>
+</table>
+
+<form>
+    <table>
+        <tr>
+            <td>Сумма</td>
+            <td>
+                <input type="text" name="amount"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Дата</td>
+            <td>
+                <input type="date" name="expenseDate" th:value="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>Описание</td>
+            <td>
+                <textarea rows = "5" cols = "30" name = "description"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>Категория</td>
+            <td>
+                <select id="categorySelector" name="categorySelector">
+                    <option th:each="category: ${categories}"
+                            th:text="${category.name}"
+                            th:value="${category.id}"
+                    />
+                    <option></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <input type="hidden" name="cardId" th:value="${card.id}"/>
+    <input type="submit" formmethod="post" value="Добавить расход"/>
+</form>
+</body>
+</html>
