@@ -25,6 +25,7 @@ public class Card {
     @ManyToOne
     @JoinColumn(name = "person_id")
     private Person owner;
+    private Boolean active;
     @Column(nullable = false)
     private String bank;
     @Column(nullable = false)
@@ -42,6 +43,7 @@ public class Card {
         this.owner = owner;
         this.bank = bank;
         this.openDate = openDate;
+        this.active = true;
     }
 
     public static class DepositComparator implements Comparator<Deposit>{

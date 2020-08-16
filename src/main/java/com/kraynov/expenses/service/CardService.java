@@ -38,12 +38,19 @@ public class CardService {
         cardRepo.deleteById(id);
     }
 
-    public void closeCard(Card card) {
+    public void closeCard(Card card) throws BusinessException {
+        if (card.getDeposits().stream().anyMatch(Deposit::getActive)) {
+            throw new BusinessException("Card has deposits. Need to close them firstly.");
+        }
+
         //todo: добавить проверку на то что на карте пусто. Если есть ДС, то заставить пользователя перевести их на другую карту
-//        card.getDeposits().forEach(depositService::delete);
+
+        card.setActive(false);
+        //todo: проверить что
+        //card.getDeposits().forEach(d -> d.setCard(null));
 //        card.setDeposits(new HashSet<>());
 //        card.setBalance(0);
-//        cardRepo.save(card);
+        cardRepo.save(card);
     }
 
     public void addMoneyToCard(Long cardId, Integer newMoney) throws BusinessException {
@@ -81,6 +88,14 @@ public class CardService {
                 .sum();
     }
 
+    /**
+     * Вычисление свободного места на карте, сколько еще можно положить.
+     * Расчет производится следующим образом - от застрахованной в АСВ суммы вычитается сумма ДС с активных на данный
+     * момент вкладов, а также вычитается ожидаемый процентный доход с этих вкладов.
+     *
+     * @param card карта
+     * @return сумма, которую еще можно положить на данный вклад, не превышая застрахованную в АСВ сумму
+     */
     public double calculateFreeSpace(Card card) {
         return 1_400_000 - getRevenue(card) - getTotal(card);
     }
