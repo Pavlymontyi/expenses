@@ -63,17 +63,22 @@
                                            th:text="${card.owner.name + ' ' +card.bank+' '+#calendars.format(card.openDate, 'dd-MM-yyyy')}">
                                         </a>
                                         <tr>
-                                            <td>Сумма</td>
+                                            <td>Сумма по вкладам</td>
                                             <td th:text="${cardsTotal[card.id]}"/>
                                         </tr>
                                         <tr>
                                             <td>Ожидаемые проценты</td>
                                             <td th:text="${#numbers.formatDecimal(cardsRevenues[card.id],2,2)}"/>
-
                                         </tr>
                                         <tr>
                                             <td>Текущий остаток</td>
                                             <td th:text="${card.balance}"/>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Осталось дней</td>
+<!--                                            <input type="text" name="balance" disabled="true" th:value="${@cardService.getRemainingDaysCount(card)}"/>-->
+                                            <td th:text="${@cardService.getRemainingDaysCount(card)}"/>
                                         </tr>
                                     </table>
 

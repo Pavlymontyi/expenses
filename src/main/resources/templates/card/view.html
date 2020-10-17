@@ -33,6 +33,12 @@
             <input type="text" name="balance" disabled="true" th:value="${card.balance}"/>
         </td>
     </tr>
+    <tr>
+        <td>Дней осталось</td>
+        <td>
+            <input type="text" name="balance" disabled="true" th:value="${@cardService.getRemainingDaysCount(card)}"/>
+        </td>
+    </tr>
 </table>
 
 <div>Вклады</div>

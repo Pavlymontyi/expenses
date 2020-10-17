@@ -69,8 +69,10 @@ public class DepositService {
 
     public void closeDeposit(Deposit deposit, Integer factPercentAmount) {
         deposit.setActive(false);
+        deposit.setRevenue(factPercentAmount);
         depositRepo.save(deposit);
         Card card = deposit.getCard();
+        //todo: добавить создание сущности Income с подходящим типом
         card.setBalance(card.getBalance() + calculateTotal(deposit) + factPercentAmount);
         cardRepo.save(card);
     }
