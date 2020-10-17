@@ -19,10 +19,11 @@ import java.util.Objects;
 public class Income {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQUENCE")
-    @SequenceGenerator(name = "SEQUENCE", initialValue = 100, allocationSize = 25)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EXPENSE_SEQUENCE")
+    @SequenceGenerator(name="EXPENSE_SEQUENCE", initialValue=100, allocationSize=25)
     private Long id;
 
+    @Column(name="amount")
     private int value;
     private Date date;
     @ManyToOne

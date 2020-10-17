@@ -18,8 +18,8 @@ import java.util.Set;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE")
-    @SequenceGenerator(name="SEQUENCE", initialValue=100, allocationSize=25)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="EXPENSE_SEQUENCE")
+    @SequenceGenerator(name="EXPENSE_SEQUENCE", initialValue=100, allocationSize=25)
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
