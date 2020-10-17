@@ -8,7 +8,9 @@ import com.kraynov.expenses.domain.dep.Person;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class CardService {
@@ -100,4 +102,42 @@ public class CardService {
         return 1_400_000 - getRevenue(card) - getTotal(card);
     }
 
+    /**
+     * Формируем диапазон дат расчетного периода, отталкиваясь от текущей даты
+     * @param card карта
+     * @return диапазон дат расчетного периода
+     */
+    public Date[] calculateDateRange(Card card) {
+        return calculateDateRange(card, Calendar.getInstance());
+    }
+
+    /**
+     * Формируем диапазон дат расчетного периода, отталкиваясь от указанной в параметре даты
+     * @param card карта
+     * @param when дата, на момент которой расчитываем расчетный период
+     * @return диапазон дат расчетного периода
+     */
+    public Date[] calculateDateRange(Card card, Calendar when) {
+        Calendar endDate = Calendar.getInstance();
+        endDate.setTime(card.getOpenDate());
+
+        int i = 0;
+        while (endDate.before(when)) {
+            endDate.setTime(card.getOpenDate());
+            endDate.add(Calendar.MONTH, ++i);
+            endDate.add(Calendar.DAY_OF_MONTH, -1);
+        }
+
+        Calendar startDate = Calendar.getInstance();
+        startDate.setTime(endDate.getTime());
+        startDate.add(Calendar.MONTH, -1);
+        startDate.add(Calendar.DAY_OF_MONTH, 1);
+
+        return new Date[]{startDate.getTime(), endDate.getTime()};
+    }
+
+    public long getRemainingDaysCount(Card card) {
+        long diffInMillies = calculateDateRange(card)[1].getTime() - Calendar.getInstance().getTime().getTime();
+        return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS)+1;
+    }
 }
