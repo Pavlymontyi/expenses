@@ -20,11 +20,13 @@ public class DepositService {
     private final CardRepo cardRepo;
     private final DepositRepo depositRepo;
     private final IncomeRepo incomeRepo;
+    private final IncomeService incomeService;
 
-    public DepositService(CardRepo cardRepo, DepositRepo depositRepo, IncomeRepo incomeRepo) {
+    public DepositService(CardRepo cardRepo, DepositRepo depositRepo, IncomeRepo incomeRepo, IncomeService incomeService) {
         this.cardRepo = cardRepo;
         this.depositRepo = depositRepo;
         this.incomeRepo = incomeRepo;
+        this.incomeService = incomeService;
     }
 
     public List<Deposit> getActiveDeposits() {
@@ -48,6 +50,11 @@ public class DepositService {
         return depositRepo.findById(id).orElseThrow(() -> new BusinessException("Deposit was not found by id=" + id));
     }
 
+    /**
+     * Вычисления количества денег на вкладе без учета набегающих процентов
+     * @param deposit вклад
+     * @return сумма на вкладе без учета процентов
+     */
     public int calculateTotal(Deposit deposit) {
         return deposit.getIncomes().stream().mapToInt(Income::getValue).sum();
     }
@@ -91,6 +98,15 @@ public class DepositService {
         deposit.setDuration(duration);
         deposit.setRefillable(refillable);
         depositRepo.save(deposit);
+    }
+
+    /**
+     * Вычисление суммарного дохода по вкладу
+     * @param deposit вклад
+     * @return сумма доходов по вкладу
+     */
+    public double calculateRevenue(Deposit deposit) {
+        return deposit.getIncomes().stream().mapToDouble(incomeService::calculateRevenue).sum();
     }
 
     public Integer calculateFreeSpace(Deposit dep) {

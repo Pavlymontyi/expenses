@@ -85,8 +85,7 @@ public class CardService {
     public Double getRevenue(Card card) {
         return card.getDeposits().stream()
                 .filter(Deposit::getActive)
-                .flatMap(dep -> dep.getIncomes().stream())
-                .mapToDouble(Income::getRevenue)
+                .mapToDouble(depositService::calculateRevenue)
                 .sum();
     }
 

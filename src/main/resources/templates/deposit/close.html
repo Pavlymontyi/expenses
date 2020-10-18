@@ -39,12 +39,12 @@
 <form method="post">
     <table>
         <caption>Данные вклада</caption>
-<!--        <tr>-->
-<!--            <td>Годовая ставка</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="percent" disabled="true" th:value="th:value=${deposit.percent}"/>-->
-<!--            </td>-->
-<!--        </tr>-->
+        <tr>
+            <td>Годовая ставка</td>
+            <td>
+                <input type="text" name="percent" disabled="true" th:value="${deposit.percent}"/>
+            </td>
+        </tr>
         <tr>
             <td>Дата открытия вклада</td>
             <td>
@@ -61,19 +61,15 @@
         <tr>
             <td>Ожидаемая дата закрытия вклада</td>
             <td>
-                <input type="text" disabled="true"/>
+                <input type="text" name="depositEndDate" disabled="true"
+                       th:value="${#calendars.format(deposit.endDate, 'dd-MM-yyyy')}"/>
             </td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Сумма на вкладе</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="amount" disabled="true" th:value="${depositTotal}"/>-->
-<!--            </td>-->
-<!--        </tr>-->
         <tr>
             <td>Ожидаемые проценты</td>
             <td>
-                <input type="text" disabled="true"/>
+                <input type="text" name="expectedPercentAmount" disabled="true"
+                       th:value="${#numbers.formatDecimal(@depositService.calculateRevenue(deposit),2,2)}"/>
             </td>
         </tr>
     </table>
