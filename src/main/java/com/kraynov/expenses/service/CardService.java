@@ -10,7 +10,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class CardService {
@@ -22,8 +25,22 @@ public class CardService {
         this.depositService = depositService;
     }
 
+    /**
+     * Возвращает коллекцию всех карт всех клиентов
+     * @return коллекцию карт
+     */
     public Iterable<Card> getAllCards() {
         return cardRepo.findAll();
+    }
+
+    /**
+     * Возвращает коллекцию активных карт всех клиентов
+     * @return коллекцию карт
+     */
+    public List<Card> getAllActiveCards() {
+        return StreamSupport.stream(getAllCards().spliterator(), false)
+                .filter(Card::getActive)
+                .collect(Collectors.toList());
     }
 
     public void openNewCard(Person person, Date cardOpenDate, String bankName, Integer balance) throws BusinessException {

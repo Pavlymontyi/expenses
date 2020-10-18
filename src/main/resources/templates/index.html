@@ -164,7 +164,7 @@
                                                                 <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
                                                                 <td/>
                                                                 <td><b th:text="${#numbers.formatDecimal(@depositService.calculateRevenue(deposit), 1, 0)}" /></td>
-                                                                <td><b th:text="${#numbers.formatDecimal(@depositService.calculateTotal(deposit)+@depositService.calculateRevenue(deposit), 1, 0)}" /></td>
+                                                                <td><b th:text="${#numbers.formatDecimal(@depositService.calculateIncomesAmount(deposit)+@depositService.calculateRevenue(deposit), 1, 0)}" /></td>
                                                             </tr>
                                                         </table>
 

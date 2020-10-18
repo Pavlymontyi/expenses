@@ -66,8 +66,6 @@ public class DepositController {
     public String getRefillDepositScreen(@RequestParam Long depositId, Map<String, Object> model) throws BusinessException {
         Deposit deposit = depositService.getDepositById(depositId);
         model.put("deposit", deposit);
-        model.put("depositTotal", depositService.calculateTotal(deposit));
-        model.put("cards", cardService.getAllCards());
         return "/deposit/addMoney.html";
     }
 

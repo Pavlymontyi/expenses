@@ -55,7 +55,7 @@ public class DepositService {
      * @param deposit вклад
      * @return сумма на вкладе без учета процентов
      */
-    public int calculateTotal(Deposit deposit) {
+    public int calculateIncomesAmount(Deposit deposit) {
         return deposit.getIncomes().stream().mapToInt(Income::getValue).sum();
     }
 
@@ -80,7 +80,7 @@ public class DepositService {
         depositRepo.save(deposit);
         Card card = deposit.getCard();
         //todo: добавить создание сущности Income с подходящим типом
-        card.setBalance(card.getBalance() + calculateTotal(deposit) + factPercentAmount);
+        card.setBalance(card.getBalance() + calculateIncomesAmount(deposit) + factPercentAmount);
         cardRepo.save(card);
     }
 

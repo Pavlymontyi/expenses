@@ -60,7 +60,7 @@
         <tr>
             <td>Текущая сумма на карте</td>
             <td>
-                <input type="text" name="amount" disabled="true" th:value="${depositTotal}"/>
+                <input type="text" name="amount" disabled="true" th:value="${@depositService.calculateIncomesAmount(deposit)}"/>
             </td>
         </tr>
 
@@ -80,7 +80,7 @@
             <td>Карта</td>
             <td>
                 <select id="cardSelector" name="cardSelector">
-                    <option th:each="card: ${cards}"
+                    <option th:each="card: ${@cardService.getAllActiveCards()}"
                             th:text="${card.owner.name} + ' ' + ${card.bank}"
                             th:value="${card.id}"
                             th:selected="${card==deposit.card}"
