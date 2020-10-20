@@ -33,19 +33,21 @@ public class IncomeService {
 
     /**
      * Вычисление суммы: пополнение вклада + набежавшие по нему проценты
+     *
      * @param income пополнение вклада
      * @return пополнение вклада + проценты
      */
     public double calculateTotal(Income income) {
-        return income.getValue() + calculateRevenue(income);
+        return income.getValue() + calculateExpectedRevenue(income);
     }
 
     /**
      * Вычисление дохода по конкретному пополнению на вклад
+     *
      * @param income пополнение на вклад
      * @return сумма дохода по данному
      */
-    public double calculateRevenue(Income income) {
+    public double calculateExpectedRevenue(Income income) {
         Deposit deposit = income.getDeposit();
         LocalDate depositEndDate = DateUtils.asLocalDate(deposit.getEndDate());
         LocalDate incomeAdditionDate = DateUtils.asLocalDate(income.getDate());
@@ -55,7 +57,8 @@ public class IncomeService {
     }
 
     /**
-     * Получение пояснения по алгоритму вычисления дохода по конкретному пополнению (see {@link #calculateRevenue})
+     * Получение пояснения по алгоритму вычисления дохода по конкретному пополнению (see {@link #calculateExpectedRevenue})
+     *
      * @param income пополнение на вклад
      * @return пояснение по доходу
      */
@@ -65,5 +68,18 @@ public class IncomeService {
         LocalDate incomeAdditionDate = DateUtils.asLocalDate(income.getDate());
         long diff = ChronoUnit.DAYS.between(incomeAdditionDate, depositEndDate);
         return income.getValue() + "*" + (deposit.getPercent() / 100) + "*" + diff + "/" + "365";
+    }
+
+    /**
+     * Вычисление ожидаемых процентов по конкретному пополнению на вклад С УЧЕТОМ общей доходности вклада
+     * @param income пополнение на вклад
+     * @param deposit вклад
+     * @param totalAmount общая сумма дохода всего вклада
+     * @return предлагаемые проценты по пополнению
+     */
+    public double calculateSuggestedRevenue(Income income, Deposit deposit, Double totalAmount) {
+        double sum = deposit.getIncomes().stream().mapToDouble(this::calculateExpectedRevenue).sum();
+        double currentIncomeValue = calculateExpectedRevenue(income);
+        return currentIncomeValue / sum * totalAmount;
     }
 }

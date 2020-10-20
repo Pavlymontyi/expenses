@@ -155,7 +155,7 @@
                                                                     <a th:href="@{/income/edit(incomeId=${income.id})}" th:text="${income.value}"/>
                                                                 </td>
                                                                 <td th:text="${income.owner.name}"/>
-                                                                <td th:text="${#numbers.formatDecimal(@incomeService.calculateRevenue(income),1,0)}"
+                                                                <td th:text="${#numbers.formatDecimal(@incomeService.calculateExpectedRevenue(income),1,0)}"
                                                                     th:title="${@incomeService.getRevenueClarification(income)}"/>
                                                                 <td th:text="${#numbers.formatDecimal(@incomeService.calculateTotal(income),1,0)}"/>
                                                             </tr>

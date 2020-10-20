@@ -22,6 +22,8 @@ public class Income {
 
     @Column(name="amount")
     private int value;
+    @Column(name="revenue")
+    private Integer revenue; //фактические проценты
     private Date date;
     @ManyToOne
     @JoinColumn(name = "deposit_id")
