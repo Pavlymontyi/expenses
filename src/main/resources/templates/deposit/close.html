@@ -39,12 +39,12 @@
 <form method="post">
     <table>
         <caption>Данные вклада</caption>
-<!--        <tr>-->
-<!--            <td>Годовая ставка</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="percent" disabled="true" th:value="th:value=${deposit.percent}"/>-->
-<!--            </td>-->
-<!--        </tr>-->
+        <tr>
+            <td>Годовая ставка</td>
+            <td>
+                <input type="text" name="percent" disabled="true" th:value="${deposit.percent}"/>
+            </td>
+        </tr>
         <tr>
             <td>Дата открытия вклада</td>
             <td>
@@ -61,31 +61,66 @@
         <tr>
             <td>Ожидаемая дата закрытия вклада</td>
             <td>
-                <input type="text" disabled="true"/>
+                <input type="text" name="depositEndDate" disabled="true"
+                       th:value="${#calendars.format(deposit.endDate, 'dd-MM-yyyy')}"/>
             </td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Сумма на вкладе</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="amount" disabled="true" th:value="${depositTotal}"/>-->
-<!--            </td>-->
-<!--        </tr>-->
         <tr>
             <td>Ожидаемые проценты</td>
             <td>
-                <input type="text" disabled="true"/>
+                <input type="text" name="expectedPercentAmount" disabled="true"
+                       th:value="${#numbers.formatDecimal(@depositService.calculateRevenue(deposit),2,2)}"/>
             </td>
         </tr>
+
+
+        <table th:if="${step} == 2">
+            <tr align="right">
+                <td>Дата</td>
+                <td>Сумма</td>
+                <td>Чье</td>
+                <td>Ожидаемые проценты</td>
+                <td>Фактические проценты</td>
+                <td>Перевод на карту</td>
+                <td>Итог</td>
+            </tr>
+            <tr th:each="income: ${deposit.incomes}" align="right">
+<!--                <input type="hidden" th:name="${'incomeId.'+income.id}" th:value="${'incomeId.'+income.id}"/>-->
+
+                <td nowrap th:text="${#calendars.format(income.date, 'dd-MM-yyyy')}"/>
+                <td th:text="${income.value}"/>
+                <td th:text="${income.owner.name}"/>
+                <td th:text="${#numbers.formatDecimal(@incomeService.calculateExpectedRevenue(income),1,0)}"
+                    th:title="${@incomeService.getRevenueClarification(income)}"/>
+                <td>
+                    <input type="text" th:name="${'actualRevenue.incomeId.'+income.id}"
+                           th:value="${#numbers.formatDecimal(@incomeService.calculateSuggestedRevenue(income, deposit, actualDepositRevenue),1,0)}"/>
+                </td>
+                <td>
+                    <select id="cardSelector" name="cardSelector">
+                        <option th:each="card: ${@cardService.getAllActiveCards()}"
+                                th:text="${card.owner.name} + ' ' + ${card.bank}"
+                                th:value="${card.id}"
+                                th:selected="${card==deposit.card}"
+                        />
+                    </select>
+                </td>
+                <td th:text="${#numbers.formatDecimal(@incomeService.calculateTotal(income),1,0)}"/>
+            </tr>
+            <tr valign="bottom" align="right">
+                <td><b>Итог</b></td>
+                <td><b th:text="${#aggregates.sum(deposit.incomes.![value])}"/></td>
+                <td/>
+                <td><b th:text="${#numbers.formatDecimal(@depositService.calculateRevenue(deposit), 1, 0)}" /></td>
+                <td/>
+                <td/>
+                <td><b th:text="${#numbers.formatDecimal(@depositService.calculateIncomesAmount(deposit)+@depositService.calculateRevenue(deposit), 1, 0)}" /></td>
+            </tr>
+        </table>
     </table>
 
     <table>
         <caption>Данные закрытия вклада</caption>
-<!--        <tr>-->
-<!--            <td>Фактическая годовая ставка</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="percentActual" th:value="th:value=${deposit.percent}"/>-->
-<!--            </td>-->
-<!--        </tr>-->
         <tr>
             <td>Дата закрытия вклада</td>
             <td>
@@ -95,24 +130,13 @@
         <tr>
             <td>Фактические проценты</td>
             <td>
-                <input type="text" name="percentAmount"/>
+                <input type="text" name="actualDepositRevenue" th:value="${actualDepositRevenue}"/>
             </td>
         </tr>
-<!--        <tr>-->
-<!--            <td>Карта</td>-->
-<!--            <td>-->
-<!--                <select id="cardSelector" name="cardSelector">-->
-<!--                    <option th:each="card: ${cards}"-->
-<!--                            th:text="${card.owner.name} + ' ' + ${card.bank}"-->
-<!--                            th:value="${card.id}"-->
-<!--                            th:selected="${card==deposit.card}"-->
-<!--                    />-->
-<!--                </select>-->
-<!--            </td>-->
-<!--        </tr>-->
     </table>
 
     <input type="hidden" name="depositId" th:value="${deposit.id}"/>
+    <input type="hidden" name="step" th:value="${step}"/>
     <input type="submit" value="Закрыть вклад"/>
 </form>
 </body>

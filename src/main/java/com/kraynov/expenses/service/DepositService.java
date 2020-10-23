@@ -9,6 +9,7 @@ import com.kraynov.expenses.domain.dep.Income;
 import com.kraynov.expenses.errorhandling.BusinessException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,11 +21,13 @@ public class DepositService {
     private final CardRepo cardRepo;
     private final DepositRepo depositRepo;
     private final IncomeRepo incomeRepo;
+    private final IncomeService incomeService;
 
-    public DepositService(CardRepo cardRepo, DepositRepo depositRepo, IncomeRepo incomeRepo) {
+    public DepositService(CardRepo cardRepo, DepositRepo depositRepo, IncomeRepo incomeRepo, IncomeService incomeService) {
         this.cardRepo = cardRepo;
         this.depositRepo = depositRepo;
         this.incomeRepo = incomeRepo;
+        this.incomeService = incomeService;
     }
 
     public List<Deposit> getActiveDeposits() {
@@ -48,7 +51,12 @@ public class DepositService {
         return depositRepo.findById(id).orElseThrow(() -> new BusinessException("Deposit was not found by id=" + id));
     }
 
-    public int calculateTotal(Deposit deposit) {
+    /**
+     * Вычисления количества денег на вкладе без учета набегающих процентов
+     * @param deposit вклад
+     * @return сумма на вкладе без учета процентов
+     */
+    public int calculateIncomesAmount(Deposit deposit) {
         return deposit.getIncomes().stream().mapToInt(Income::getValue).sum();
     }
 
@@ -67,13 +75,19 @@ public class DepositService {
         cardRepo.save(card);
     }
 
-    public void closeDeposit(Deposit deposit, Integer factPercentAmount) {
+    @Transactional
+    public void closeDeposit(Deposit deposit, Integer factPercentAmount, Map<Long, Integer> income2Revenues) throws BusinessException {
+        for (Map.Entry<Long, Integer> income2Revenue : income2Revenues.entrySet()) {
+            Income income = incomeRepo.findById(income2Revenue.getKey()).orElseThrow(() -> new BusinessException("Can't find income "));
+            income.setRevenue(income2Revenue.getValue());
+            incomeRepo.save(income);
+        }
+
         deposit.setActive(false);
         deposit.setRevenue(factPercentAmount);
         depositRepo.save(deposit);
         Card card = deposit.getCard();
-        //todo: добавить создание сущности Income с подходящим типом
-        card.setBalance(card.getBalance() + calculateTotal(deposit) + factPercentAmount);
+        card.setBalance(card.getBalance() + calculateIncomesAmount(deposit) + factPercentAmount);
         cardRepo.save(card);
     }
 
@@ -91,6 +105,15 @@ public class DepositService {
         deposit.setDuration(duration);
         deposit.setRefillable(refillable);
         depositRepo.save(deposit);
+    }
+
+    /**
+     * Вычисление суммарного дохода по вкладу
+     * @param deposit вклад
+     * @return сумма доходов по вкладу
+     */
+    public double calculateRevenue(Deposit deposit) {
+        return deposit.getIncomes().stream().mapToDouble(incomeService::calculateExpectedRevenue).sum();
     }
 
     public Integer calculateFreeSpace(Deposit dep) {

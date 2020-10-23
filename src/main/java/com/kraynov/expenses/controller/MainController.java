@@ -38,16 +38,12 @@ public class MainController {
         //todo: вынести в сервисы
         Map<Long, Integer> cardsTotal = StreamSupport.stream(cardService.getAllCards().spliterator(), false)
                 .collect(Collectors.toMap(Card::getId, cardService::getTotal));
-        Map<Long, Double> cardsRevenues = StreamSupport.stream(cardService.getAllCards().spliterator(), false)
-                .collect(Collectors.toMap(Card::getId, cardService::getRevenue));
         Map<Long, Integer> personToMoneyTotal = personService.getDepositMoneyTotal(persons);
         Map<Long, Integer> personToCardBalance = personService.getCardsBalanceTotal(persons);
         Map<Long, Integer> depositFreeSpaces = depositService.calculateFreeSpace(depositService.getActiveDeposits());
 
-//        model.put("persons", persons);
         model.put("groupAndPersons", groupAndPersons);
         model.put("cardsTotal", cardsTotal);
-        model.put("cardsRevenues", cardsRevenues);
         model.put("personToMoneyTotal", personToMoneyTotal);
         model.put("personToCardsBalanceTotal", personToCardBalance);
         model.put("depositFreeSpaces", depositFreeSpaces);
